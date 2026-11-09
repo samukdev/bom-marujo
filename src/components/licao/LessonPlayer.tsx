@@ -3,9 +3,8 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import type { CartaoConceito, Licao, Questao } from '@/content/tipos';
-import { Cena } from '@/components/cenas/Cena';
-import { SINAIS } from '@/lib/ripeam/sinais';
-import { bip, tocarSinal } from '@/lib/audio/apito';
+import { CenaInterativa } from '@/components/cenas/CenaInterativa';
+import { bip } from '@/lib/audio/apito';
 import { concluirLicao } from '@/lib/progresso';
 import { Marujo, type Pose } from '@/components/marujo/Marujo';
 import s from './licao.module.css';
@@ -38,7 +37,6 @@ export function LessonPlayer({ licao }: { licao: Licao }) {
   const [escolha, setEscolha] = useState<number | null>(null);
   const [conferido, setConferido] = useState(false);
   const [acertos, setAcertos] = useState(0);
-  const [apitos, setApitos] = useState(0);
   const [fim, setFim] = useState<{ xp: number } | null>(null);
   const [sequencia, setSequencia] = useState(0);
   const [reacao, setReacao] = useState<Pose>('aprovando');
@@ -57,7 +55,6 @@ export function LessonPlayer({ licao }: { licao: Licao }) {
     setI(i + 1);
     setEscolha(null);
     setConferido(false);
-    setApitos(0);
   }
 
   function conferir() {
@@ -73,11 +70,6 @@ export function LessonPlayer({ licao }: { licao: Licao }) {
     // Erros voltam no fim da lição (uma vez).
     // (na repetição, outra ordem de alternativas — para não decorar a posição)
     if (!certo && !passo.repeticao) setFila((f) => [...f, { tipo: 'questao', q: embaralhar(passo.q, 'bis'), repeticao: true }]);
-  }
-
-  function ouvir(lento = false) {
-    if (passo?.tipo !== 'questao' || !passo.q.som) return;
-    void tocarSinal(SINAIS[passo.q.som].sinal, { lento, aoApitar: () => setApitos((n) => n + 1) });
   }
 
   // teclado: 1–4 escolhe, Enter confere/continua
@@ -136,7 +128,7 @@ export function LessonPlayer({ licao }: { licao: Licao }) {
           <>
             <div className={s.tag}>✨ Novo conceito</div>
             <h1 className={s.titulo}>{passo.c.titulo}</h1>
-            {passo.c.cena && <div className={s.cena}><Cena key={passo.c.id} spec={passo.c.cena} revelado /></div>}
+            {passo.c.cena && <CenaInterativa key={passo.c.id} spec={passo.c.cena} revelado />}
             <p className={s.texto}>{passo.c.texto}</p>
             {passo.c.falaMarujo && (
               <div className={s.marujo}>
@@ -149,14 +141,7 @@ export function LessonPlayer({ licao }: { licao: Licao }) {
           <>
             <div className={s.tag}>{passo.repeticao ? '🔁 Vamos de novo' : licaoTag(licao.temaId)}</div>
             <h1 className={s.titulo}>{passo.q.enunciado}</h1>
-            <div className={s.cena}><Cena key={`${passo.q.id}-${i}`} spec={passo.q.cena} revelado={conferido} apitos={apitos} /></div>
-            {passo.q.som && (
-              <div className={s.som}>
-                <Marujo key={`apito-${apitos}`} pose="apito" altura={64} animacao={apitos > 0 ? 'treme' : 'nenhuma'} />
-                <button className={s.btnSom} onClick={() => ouvir()}>🔊 Ouvir sinal</button>
-                <button className={`${s.btnSom} ${s.lento}`} onClick={() => ouvir(true)} aria-label="Ouvir devagar">🐢</button>
-              </div>
-            )}
+            <CenaInterativa key={`${passo.q.id}-${i}`} spec={passo.q.cena} revelado={conferido} som={passo.q.som} />
             <div className={s.opcoes}>
               {passo.q.opcoes.map((o, k) => {
                 const cls = [s.op];

@@ -1,78 +1,111 @@
+'use client';
+
+import type { CSSProperties } from 'react';
 import { SINAIS, notacao, type SinalId } from '@/lib/ripeam/sinais';
-import { Defs, INK, Luz, Rotulo, COR_LUZ } from './comum';
+import { Defs, INK, Placa, Rotulo } from './comum';
+import { LanchaPlano, NavioPlano } from './embarcacoes';
+import type { EstadoApito } from './Cena';
+import { COR, TRACO } from './tokens';
 import s from './cenas.module.css';
 
 type Manobra = 'boreste' | 'bombordo' | 'atras' | 'nenhuma';
 
-/** Vista de cima. Visto de cima, guinar para BORESTE é girar no sentido horário. */
-const NAVIO: Record<Manobra, string> = {
-  boreste: 'rotate(220deg) translate(0,-85px)',
-  bombordo: 'rotate(140deg) translate(0,-85px)',
-  atras: 'rotate(180deg) translate(0,45px)',
-  nenhuma: 'rotate(180deg)',
+const ESCALA_NAVIO = 0.9;
+/** Navio: posição inicial e transformação depois da manobra (vista de cima: guinar para BORESTE = sentido horário). */
+const NAVIO = {
+  proa: { x: 200, y: 100, giro: 180 },
+  boreste: { x: 300, y: 92, giro: 180 },
+} as const;
+const MANOBRA: Record<Manobra, { giro: number; avanco: number }> = {
+  boreste: { giro: 55, avanco: 70 },
+  bombordo: { giro: -40, avanco: 80 },
+  atras: { giro: 0, avanco: -14 },
+  nenhuma: { giro: 0, avanco: 0 },
 };
+const VOCE = { x: 200, y: 222 };
+
+const rad = (g: number) => (g * Math.PI) / 180;
+/** Ponto local do navio → coordenada de tela, dado giro total e avanço (para a fumaça seguir a chaminé). */
+function tela(base: { x: number; y: number }, giro: number, avanco: number, lx: number, ly: number) {
+  const px = lx, py = ly - avanco; // avanço = para a proa (y local negativo)
+  const c = Math.cos(rad(giro)), sn = Math.sin(rad(giro));
+  return { x: base.x + ESCALA_NAVIO * (px * c - py * sn), y: base.y + ESCALA_NAVIO * (px * sn + py * c) };
+}
 
 export function CenaEncontro({
-  sinal, manobra, vocePara, revelado, apitos,
-}: { sinal: SinalId; manobra: Manobra; vocePara?: 'boreste'; revelado: boolean; apitos: number }) {
+  sinal, manobra, vocePara, posicao = 'proa', revelado, apito,
+}: { sinal: SinalId; manobra: Manobra; vocePara?: 'boreste'; posicao?: 'proa' | 'boreste'; revelado: boolean; apito?: EstadoApito }) {
   const def = SINAIS[sinal];
-  const transfNavio = revelado ? NAVIO[manobra] : 'rotate(180deg)';
-  const transfVoce = revelado && vocePara === 'boreste' ? 'rotate(40deg) translate(0,-70px)' : 'rotate(0deg)';
+  const base = NAVIO[posicao];
+  const m = revelado ? MANOBRA[manobra] : MANOBRA.nenhuma;
+  const giro = base.giro + m.giro;
+  const transfNavio = `rotate(${giro}deg) translate(0px, ${-m.avanco}px)`;
+  const voceMove = revelado && vocePara === 'boreste';
+  const transfVoce = voceMove ? 'rotate(55deg) translate(0px, -60px)' : 'rotate(0deg)';
+  const chamine = tela(base, giro, m.avanco, 0, 30);
+
+  // trajetória tracejada (aparece na revelação)
+  const fim = tela(base, base.giro + MANOBRA[manobra].giro, MANOBRA[manobra].avanco, 0, 0);
+  const trajNavio = manobra !== 'nenhuma' ? `M${base.x},${base.y} Q${base.x + (fim.x - base.x) * 0.15},${(base.y + fim.y) / 2 + 10} ${fim.x},${fim.y}` : null;
 
   const marcas = Array.from({ length: 14 }, (_, i) => (
-    <path key={i} d={`M${(i * 97) % 400},${(i * 61) % 260} q6,-4 12,0 t12,0`} stroke="#fff" strokeWidth="2" fill="none" opacity=".35" strokeLinecap="round" />
+    <path key={i} d={`M${(i * 97) % 400},${40 + ((i * 61) % 210)} q6,-4 12,0 t12,0`} stroke="#fff" strokeWidth={TRACO.micro} fill="none" opacity=".35" strokeLinecap="round" />
   ));
 
   return (
-    <svg className={s.svg} viewBox="0 0 400 260" role="img" aria-label="Vista de cima: um navio vindo de frente para a sua lancha">
+    <svg className={s.svg} viewBox="0 0 400 260" role="img" aria-label={`Vista de cima: navio e a sua lancha. ${revelado ? def.significado : ''}`}>
       <Defs />
-      <rect width="400" height="260" fill="#2A7FD0" />
-      <g className={s.onda} style={{ ['--d' as string]: '8s', ['--w' as string]: '-97px' }}>
+      <rect width="400" height="260" fill={COR.marDia} />
+      <g className={s.onda} style={{ '--d': '8s', '--w': '-97px' } as CSSProperties}>
         {marcas}
         <g transform="translate(400,0)">{marcas}</g>
       </g>
 
-      {revelado && manobra === 'boreste' && (
-        <g>
-          <path d="M200,110 Q198,140 150,180" stroke="#fff" strokeWidth="2.5" strokeDasharray="6 6" fill="none" opacity=".9" />
-          {vocePara && <path d="M200,186 Q202,160 250,128" stroke="#fff" strokeWidth="2.5" strokeDasharray="6 6" fill="none" opacity=".9" />}
+      <g className={s.revelar}>
+        {trajNavio && <path d={trajNavio} stroke="#fff" strokeWidth={TRACO.principal} strokeDasharray="7 7" fill="none" opacity=".9" />}
+        {voceMove && <path d={`M${VOCE.x},${VOCE.y - 26} Q${VOCE.x + 8},${VOCE.y - 50} ${VOCE.x + 49},${VOCE.y - 34 - 22}`} stroke="#fff" strokeWidth={TRACO.principal} strokeDasharray="7 7" fill="none" opacity=".9" />}
+      </g>
+
+      <g transform={`translate(${base.x},${base.y}) scale(${ESCALA_NAVIO})`}>
+        <g className={s.guina} style={{ transform: transfNavio }}>
+          {/* máquinas atrás: água revolvida na popa (hélice dando ré) + seta curta para ré */}
+          {revelado && manobra === 'atras' && (
+            <g className={s.revelar}>
+              <ellipse cx="0" cy="66" rx="22" ry="10" fill="#fff" opacity=".75" />
+              <ellipse cx="-12" cy="72" rx="9" ry="5" fill="#fff" opacity=".6" />
+              <ellipse cx="12" cy="74" rx="8" ry="4" fill="#fff" opacity=".6" />
+              {/* seta ao lado do casco, apontando para a POPA (sentido do movimento a ré) */}
+              <path d="M34,-14 L34,26 M27,18 L34,26 L41,18" stroke="#fff" strokeWidth={TRACO.principal} fill="none" strokeLinecap="round" strokeLinejoin="round" opacity=".9" />
+            </g>
+          )}
+          <NavioPlano />
+        </g>
+      </g>
+      {/* fumaça do apito: em coordenada de TELA (sobe para cima), com a duração do apito */}
+      {apito && apito.n > 0 && (
+        <g key={apito.n} className={s.fumaca} style={{ '--dur': `${apito.dur}s` } as CSSProperties} transform={`translate(${chamine.x},${chamine.y})`}>
+          <circle r="6" fill="#fff" stroke={INK} strokeWidth={TRACO.detalhe} />
+          <circle cx="4" cy="-5" r="5" fill="#fff" stroke={INK} strokeWidth={TRACO.detalhe} />
+          <circle cx="8" cy="-10" r="4" fill="#fff" stroke={INK} strokeWidth={TRACO.detalhe} />
         </g>
       )}
 
-      {/* navio — desenhado apontando para CIMA no sistema local: bombordo à esquerda (vermelha), boreste à direita (verde) */}
-      <g transform="translate(200,62) scale(.8)">
-        <g className={s.guina} style={{ transform: transfNavio }}>
-          <path d="M0,-62 C15,-44 20,-22 20,0 L20,46 Q20,56 10,58 L-10,58 Q-20,56 -20,46 L-20,0 C-20,-22 -15,-44 0,-62Z" fill="#E9EEF5" stroke={INK} strokeWidth="3" strokeLinejoin="round" />
-          <rect x="-16" y="4" width="32" height="10" rx="3" fill="var(--azul)" stroke={INK} strokeWidth="2.5" />
-          <rect x="-12" y="14" width="24" height="26" rx="4" fill="#F5F1E6" stroke={INK} strokeWidth="2.5" />
-          <circle cx="0" cy="30" r="6.5" fill="#C8372D" stroke={INK} strokeWidth="2.5" />
-          <circle cx="0" cy="30" r="2.5" fill={INK} />
-          <g key={apitos} className={apitos > 0 ? s.fumaca : s.fumacaParada}>
-            <circle cx="0" cy="30" r="7" fill="#fff" stroke={INK} strokeWidth="2" />
-            <circle cx="4" cy="26" r="6" fill="#fff" stroke={INK} strokeWidth="2" />
-            <circle cx="8" cy="22" r="5" fill="#fff" stroke={INK} strokeWidth="2" />
-          </g>
-          <Luz x={0} y={-22} cor={COR_LUZ.branca} r={3} />
-          <Luz x={-21} y={-8} cor={COR_LUZ.vermelha} r={3.4} />
-          <Luz x={21} y={-8} cor={COR_LUZ.verde} r={3.4} />
-        </g>
-      </g>
-
-      {/* sua lancha */}
-      <g transform="translate(200,214)">
+      <g transform={`translate(${VOCE.x},${VOCE.y})`}>
         <g className={s.guina} style={{ transform: transfVoce }}>
-          <path className={s.esteira} d="M-6,26 L-14,62 M6,26 L14,62" stroke="#fff" strokeWidth="3" strokeLinecap="round" />
-          <path d="M0,-28 C9,-17 12,-6 12,4 L12,20 Q12,26 6,26 L-6,26 Q-12,26 -12,20 L-12,4 C-12,-6 -9,-17 0,-28Z" fill="#fff" stroke={INK} strokeWidth="3" strokeLinejoin="round" />
-          <path d="M-8,-4 Q0,-10 8,-4 L8,4 L-8,4Z" fill="#9CCBF2" stroke={INK} strokeWidth="2" />
-          <Luz x={-12} y={-2} cor={COR_LUZ.vermelha} r={2.6} />
-          <Luz x={12} y={-2} cor={COR_LUZ.verde} r={2.6} />
+          <LanchaPlano />
         </g>
       </g>
-      <Rotulo x={226} y={244} anc="start">VOCÊ</Rotulo>
-
-      <g className={s.revelar}>
-        <Rotulo x={16} y={24} anc="start">{`${notacao(def.sinal)}  =  "${def.significado}"`}</Rotulo>
+      <g style={{ opacity: voceMove ? 0 : 1, transition: 'opacity .3s' }}>
+        <Rotulo x={VOCE.x + 22} y={VOCE.y + 22} anc="start">VOCÊ</Rotulo>
       </g>
+      {/* depois da guinada, o VOCÊ reaparece junto da lancha (posição final: rotate 55° + 60 à frente) */}
+      {voceMove && (
+        <g className={s.revelar}>
+          <Rotulo x={VOCE.x + 49 + 24} y={VOCE.y - 34 + 26} anc="start">VOCÊ</Rotulo>
+        </g>
+      )}
+
+      {revelado ? <Placa>{`${notacao(def.sinal)}  =  ${def.significado}`}</Placa> : <Placa>Vista de cima</Placa>}
     </svg>
   );
 }

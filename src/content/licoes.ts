@@ -11,7 +11,7 @@ export const LICOES: Licao[] = [
     id: 'luzes-quem-vem-la',
     temaId: 'luzes',
     titulo: 'Quem vem lá?',
-    descricao: 'Luzes de bordo, mastro e alcançado',
+    descricao: 'Luzes de bordo, mastro, alcançado e fundeio',
     conceitos: [
       {
         id: 'c-bordos',
@@ -25,10 +25,19 @@ export const LICOES: Licao[] = [
         id: 'c-setores',
         titulo: 'Cada luz tem seu setor',
         texto:
-          'A luz de mastro (branca) brilha para vante. As de bordo só aparecem do seu lado. A de alcançado (branca) só é vista por quem está por trás. Por isso, as luzes que você vê dizem para onde a embarcação está indo.',
+          'A luz de mastro (branca) brilha para vante. Cada luz de bordo só aparece do seu lado. A de alcançado (branca) só é vista por quem está por trás. Atenção: quando ela vem DE FRENTE para você, o verde dela fica à SUA esquerda e o vermelho à sua direita. Branca alta + vermelha + verde = embarcação a motor de proa (roda a roda): as duas guinam para boreste. Vermelha e verde SEM a branca alta = veleiro: você, a motor, se afasta.',
         cena: { tipo: 'luzes-noite', embarcacao: { tipo: 'propulsao-mecanica' }, aspecto: 0 },
-        falaMarujo: 'Vermelha e verde juntas? Ela vem na sua direção!',
+        falaMarujo: 'Vermelha e verde juntas? Ela vem na sua direção! Olhe se tem a branca alta.',
         pose: 'assustado',
+      },
+      {
+        id: 'c-quem-e-quem',
+        titulo: 'Quem é quem pelas luzes',
+        texto:
+          'A motor: luz de mastro branca + luzes de bordo. A vela: só luzes de bordo e de alcançado, SEM luz de mastro (veleiro navegando a motor acende a de mastro e conta como embarcação a motor). Fundeada (menos de 50 m): uma única luz branca, visível de todos os lados.',
+        cena: { tipo: 'luzes-noite', embarcacao: { tipo: 'vela' }, aspecto: 0 },
+        falaMarujo: 'Sem a branca alta em cima das cores? É veleiro!',
+        pose: 'ensinando',
       },
     ],
     questoes: [
@@ -55,11 +64,11 @@ export const LICOES: Licao[] = [
           'A luz de alcançado: você está vendo a popa dela',
           'A luz de mastro: ela vem de frente para você',
           'Uma embarcação sem governo',
-          'Uma boia de águas seguras',
+          'Um barco de pesca recolhendo a rede',
         ],
         correta: 0,
         explicacao:
-          'A luz de alcançado é branca e cobre só a popa (135°). Se você vê só ela, está na situação de quem ultrapassa: cabe a você manobrar e se manter afastado.',
+          'A luz de alcançado é branca e cobre só a popa (135°). Se você vê só ela e está se aproximando, você é quem está ultrapassando: cabe a você se manter afastado.',
         referencia: 'RIPEAM · Regras 13 e 21(c)',
       },
       {
@@ -69,8 +78,8 @@ export const LICOES: Licao[] = [
         opcoes: ['Pelo boreste dela', 'Pelo bombordo dela', 'Pela popa dela', 'Bem pela proa dela'],
         correta: 0,
         explicacao:
-          'A luz verde só é visível pelo lado de boreste, da proa até 22,5° por ante a ré do través. Vendo a verde, você está no boreste dela, e a proa dela aponta para a sua direita.',
-        referencia: 'RIPEAM · Regra 21(b)',
+          'A luz verde só é visível pelo lado de boreste, da proa até 22,5° por ante a ré do través. Vendo a verde, você está no boreste dela. Em rumos cruzados (ambas a motor), quem tem a outra por boreste é que deve manobrar — ou seja, ela; mantenha rumo e velocidade, mas vigiando. Se ela não manobrar, apite 5 curtos e manobre você: reduza, pare ou guine para boreste — nunca para bombordo, porque ela está pelo seu bombordo (Regras 17(a)(ii) e 17(c)).',
+        referencia: 'RIPEAM · Regras 15, 17(a)(ii), 17(c) e 21(b)',
       },
       {
         id: 'q-vela-proa',
@@ -84,7 +93,7 @@ export const LICOES: Licao[] = [
         ],
         correta: 0,
         explicacao:
-          'Embarcação a vela exibe luzes de bordo e de alcançado, mas não tem luz de mastro. Sem a branca alta, é veleiro. Atenção: em geral, a embarcação a motor deve se manter afastada de veleiros.',
+          'Embarcação a vela exibe luzes de bordo e de alcançado, mas não tem luz de mastro. Sem a branca alta, é veleiro. Em geral, a embarcação a motor deve se manter afastada de veleiros.',
         referencia: 'RIPEAM · Regras 18 e 25',
       },
       {
@@ -99,8 +108,8 @@ export const LICOES: Licao[] = [
         ],
         correta: 0,
         explicacao:
-          'Embarcação fundeada com menos de 50 m mostra uma luz circular branca, onde ela possa ser melhor vista. Sem luzes de bordo, porque não está navegando.',
-        referencia: 'RIPEAM · Regra 30',
+          'Embarcação fundeada com menos de 50 m mostra uma luz circular branca, onde ela possa ser melhor vista. Sem luzes de bordo, porque não está navegando. Atenção: uma lancha a motor com menos de 7 m e até 7 nós pode mostrar só uma branca circular (e, se possível, as de bordo) — mas ela estaria se movendo (Regra 23(d)).',
+        referencia: 'RIPEAM · Regras 23(d) e 30',
       },
     ],
   },
@@ -108,15 +117,15 @@ export const LICOES: Licao[] = [
     id: 'apitos-manobra',
     temaId: 'sons',
     titulo: 'Apitos de manobra',
-    descricao: '1, 2 e 3 apitos curtos',
+    descricao: '1, 2 e 3 apitos curtos e o sinal de dúvida',
     conceitos: [
       {
         id: 'c-apitos',
         titulo: 'Curto ou longo?',
         texto:
-          'Apito curto dura cerca de 1 segundo. Longo, de 4 a 6 segundos. Quando duas embarcações se avistam, quem manobra avisa: 1 curto = guinando para boreste, 2 curtos = guinando para bombordo, 3 curtos = dando máquinas atrás.',
-        cena: { tipo: 'encontro', sinal: 'guinando-boreste', manobra: 'nenhuma' },
-        falaMarujo: 'Um, dois, três: boreste, bombordo, pra trás!',
+          'Apito curto dura cerca de 1 segundo; longo, de 4 a 6 segundos. Entre embarcações de propulsão mecânica que se avistam, quem manobra avisa: 1 curto = guinando para boreste, 2 curtos = guinando para bombordo, 3 curtos = dando máquinas atrás. Já os 5 ou mais curtos e rápidos valem para qualquer embarcação à vista: dúvida ou perigo.',
+        cena: { tipo: 'encontro', sinal: 'guinando-boreste', manobra: 'boreste', vocePara: 'boreste' },
+        falaMarujo: 'Um, dois, três: boreste, bombordo, pra trás! Cinco ou mais: hein?!',
         pose: 'apito',
       },
     ],
@@ -129,7 +138,7 @@ export const LICOES: Licao[] = [
         opcoes: ['Estou guinando para boreste', 'Estou guinando para bombordo', 'Estou dando máquinas atrás', 'Não entendi suas intenções'],
         correta: 0,
         explicacao:
-          '1 curto = guinando para boreste. Em roda a roda, as duas guinam para boreste e passam bombordo com bombordo.',
+          '1 curto = guinando para boreste. Em roda a roda, as duas guinam para boreste e passam bombordo com bombordo — a sua lancha também guina e responde com 1 curto.',
         referencia: 'RIPEAM · Regras 14 e 34(a)',
       },
       {
@@ -139,29 +148,36 @@ export const LICOES: Licao[] = [
         som: 'maquinas-atras',
         opcoes: ['Estou dando máquinas atrás', 'Estou guinando para bombordo', 'Pretendo ultrapassá-lo', 'Estou fundeado'],
         correta: 0,
-        explicacao: '3 curtos = estou dando máquinas atrás (o navio está freando ou dando ré).',
+        explicacao:
+          '3 curtos = estou dando máquinas atrás. Isso não quer dizer que ele já parou: o navio ainda pode ter seguimento por um bom tempo.',
         referencia: 'RIPEAM · Regra 34(a)',
       },
       {
         id: 'q-2curtos',
-        enunciado: 'E agora, que sinal é este?',
-        cena: { tipo: 'encontro', sinal: 'guinando-bombordo', manobra: 'bombordo' },
+        enunciado: 'Este navio passa pela sua bochecha de boreste e dá este sinal. O que ele está dizendo?',
+        cena: { tipo: 'encontro', sinal: 'guinando-bombordo', manobra: 'bombordo', posicao: 'boreste' },
         som: 'guinando-bombordo',
-        opcoes: ['Estou guinando para bombordo', 'Estou guinando para boreste', 'Estou dando máquinas atrás', 'Perigo / dúvida'],
+        opcoes: ['Estou guinando para bombordo', 'Estou guinando para boreste', 'Estou dando máquinas atrás', 'Não entendi suas intenções'],
         correta: 0,
-        explicacao: '2 curtos = estou guinando para bombordo.',
-        referencia: 'RIPEAM · Regra 34(a)',
+        explicacao:
+          '2 curtos = estou guinando para bombordo. Aqui ele já está aberto pelo seu boreste e a guinada só aumenta a distância. Atenção: num roda a roda, guinar para bombordo é errado — as duas guinam para boreste.',
+        referencia: 'RIPEAM · Regras 14 e 34(a)',
       },
       {
         id: 'q-duvida',
-        enunciado: 'O navio não entendeu o que você vai fazer. Que sinal ele deve dar?',
+        enunciado: 'O navio à sua frente dá este sinal. O que ele quer dizer?',
         cena: { tipo: 'encontro', sinal: 'duvida', manobra: 'nenhuma' },
         som: 'duvida',
-        opcoes: ['Pelo menos 5 apitos curtos e rápidos', '1 apito longo', '2 apitos longos', '3 apitos curtos'],
+        opcoes: [
+          'Não entendi suas intenções / sua manobra pode não evitar o perigo',
+          'Estou guinando para boreste',
+          'Estou dando máquinas atrás',
+          'Estou parado, sem seguimento',
+        ],
         correta: 0,
         explicacao:
-          'Na dúvida sobre as intenções da outra embarcação, ou se acha que a manobra dela não evita o perigo, dê pelo menos 5 apitos curtos e rápidos.',
-        referencia: 'RIPEAM · Regra 34(d)',
+          'Pelo menos 5 apitos curtos e rápidos = dúvida ou perigo. Ao ouvir isso, reduza a velocidade e deixe a sua manobra bem clara e a tempo.',
+        referencia: 'RIPEAM · Regras 8 e 34(d)',
       },
     ],
   },
@@ -175,7 +191,7 @@ export const LICOES: Licao[] = [
         id: 'c-regiao-b',
         titulo: 'Vermelho a boreste, entrando',
         texto:
-          'O Brasil usa a Região B da IALA. Quem ENTRA no porto, vindo do mar, deixa as marcas vermelhas por boreste (direita) e as verdes por bombordo (esquerda). Saindo, inverte.',
+          'O Brasil usa a Região B da IALA. Quem ENTRA no porto, vindo do mar, deixa as marcas vermelhas por boreste (direita) e as verdes por bombordo (esquerda). Saindo, inverte. Navegue sempre dentro do canal balizado.',
         cena: { tipo: 'canal', sentido: 'entrando' },
         falaMarujo: 'Voltando pra casa, o vermelho fica à direita!',
       },
@@ -183,8 +199,8 @@ export const LICOES: Licao[] = [
         id: 'c-formatos',
         titulo: 'Formato e tope também falam',
         texto:
-          'De dia, sem luz, olhe o formato: a marca de boreste é cônica, com tope em cone de ponta para cima (▲). A de bombordo é cilíndrica, com tope em cilindro (■).',
-        cena: { tipo: 'canal', sentido: 'entrando' },
+          'De dia, olhe o formato e o tope: a marca de boreste é cônica, com tope em cone de ponta para cima (▲); a de bombordo é cilíndrica, com tope em cilindro (■). Em boias pilar ou charuto, é o tope que diz o lado.',
+        cena: { tipo: 'marcas' },
         falaMarujo: 'De longe, sem cor nenhuma, é o formato que te salva.',
         pose: 'pensando',
       },
@@ -193,7 +209,7 @@ export const LICOES: Licao[] = [
       {
         id: 'q-vermelha-entrando',
         enunciado: 'Você está ENTRANDO no porto. Por qual bordo deve deixar as boias vermelhas?',
-        cena: { tipo: 'canal', sentido: 'entrando' },
+        cena: { tipo: 'canal', sentido: 'entrando', oculto: true },
         opcoes: ['Por boreste (à minha direita)', 'Por bombordo (à minha esquerda)', 'Tanto faz, se houver profundidade', 'Devo passar entre duas vermelhas'],
         correta: 0,
         explicacao: 'Região B: entrando, vermelha por boreste e verde por bombordo.',
@@ -202,7 +218,7 @@ export const LICOES: Licao[] = [
       {
         id: 'q-vermelha-saindo',
         enunciado: 'Agora você está SAINDO do porto para o mar. Por qual bordo deixa as boias vermelhas?',
-        cena: { tipo: 'canal', sentido: 'saindo' },
+        cena: { tipo: 'canal', sentido: 'saindo', oculto: true },
         opcoes: ['Por bombordo (à minha esquerda)', 'Por boreste (à minha direita)', 'Por qualquer bordo', 'Não se usa boia na saída'],
         correta: 0,
         explicacao: 'O sentido convencional é o de quem entra. Saindo, tudo se inverte: vermelha por bombordo e verde por boreste.',
@@ -211,10 +227,16 @@ export const LICOES: Licao[] = [
       {
         id: 'q-formato-verde',
         enunciado: 'Qual é o formato da marca lateral de BOMBORDO (verde) na Região B?',
-        cena: { tipo: 'canal', sentido: 'entrando' },
-        opcoes: ['Cilíndrica, com tope cilíndrico', 'Cônica, com tope em cone', 'Esférica, com tope em X', 'Pilar, com dois cones'],
+        cena: { tipo: 'marcas', oculto: true },
+        opcoes: [
+          'Cilíndrica, com tope cilíndrico',
+          'Cônica, com tope em cone de ponta para cima',
+          'Pilar, com dois cones pretos no tope',
+          'Esférica, com faixas verticais vermelhas e brancas',
+        ],
         correta: 0,
-        explicacao: 'Marca de bombordo: verde, cilíndrica (tipo lata), tope cilíndrico. Marca de boreste: vermelha, cônica, tope em cone com a ponta para cima.',
+        explicacao:
+          'Marca de bombordo: verde, cilíndrica (tipo lata), tope cilíndrico. A cônica com cone para cima é a de boreste; dois cones pretos são de marca cardinal; esférica listrada é de águas seguras.',
         referencia: 'Sistema IALA · Região B',
       },
     ],
@@ -346,7 +368,7 @@ LICOES.push(
         cena: { tipo: 'no', no: 'lais-de-guia', oculto: true },
         opcoes: ['Lais de guia', 'Volta do fiel', 'Nó de oito', 'Nó direito'],
         correta: 0,
-        explicacao: 'A alça do lais de guia é fixa: não estrangula a pessoa quando o cabo é puxado. É o nó do salvamento.',
+        explicacao: 'A alça do lais de guia é fixa: não estrangula a pessoa quando o cabo é puxado. É o nó do salvamento. Primeiro jogue a boia salva-vidas; a alça vai por baixo dos braços.',
         referencia: 'Marinharia · resgate de homem ao mar',
       },
       {
@@ -364,7 +386,7 @@ LICOES.push(
         cena: { tipo: 'no', no: 'volta-do-fiel', oculto: true },
         opcoes: ['Volta do fiel', 'Lais de guia', 'Nó de escota', 'Nó direito'],
         correta: 0,
-        explicacao: 'A volta do fiel é rápida de dar e de ajustar a altura: perfeita para defensas.',
+        explicacao: 'A volta do fiel é rápida de dar e de ajustar a altura: perfeita para defensas. Ela pode correr com o balanço; para ficar de vez, arremate com um cote.',
         referencia: 'Marinharia · voltas',
       },
       {

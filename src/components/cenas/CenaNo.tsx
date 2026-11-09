@@ -1,10 +1,13 @@
+'use client';
+
 import type { CSSProperties, ReactNode } from 'react';
 import {
   caminho, cruzamentos, geometria, recorte, trancado, trechosNaFrente,
   type Amostra, type CaboGeo, type Trecho,
 } from '@/lib/nos/geometria';
 import { NOS, type NoId } from '@/lib/nos/catalogo';
-import { INK, Rotulo } from './comum';
+import { DiscoPergunta, INK, Placa, Rotulo, useIdCena } from './comum';
+import { COR } from './tokens';
 import s from './cenas.module.css';
 
 const CORES = [
@@ -13,21 +16,35 @@ const CORES = [
 ];
 type Cor = (typeof CORES)[number];
 
-const DURACAO = 3.2; // s para "dar" o nó inteiro
-const LARGURA = 12; // corpo do cabo
+const DURACAO = 2.4; // s para "dar" o nó inteiro (TEMPO.acao)
+const LARGURA_PADRAO = 12; // corpo do cabo
 
 /** Um pedaço de cabo desenhado: sombra, contorno, corpo, volume, trança e (opcional) falcaça nas pontas. */
 function Peca({
-  id, a, inteiro, cor, pontas, sombra, animar, atraso, duracao,
+  id, a, inteiro, cor, pontas, sombra, animar, atraso, duracao, chicotes = [false, false], largura,
 }: {
   /** a: o pedaço a desenhar; inteiro: o cabo todo (para a trança emendar sem costura) */
   id: string; a: Amostra[]; inteiro?: Amostra[]; cor: Cor; pontas: 'round' | 'butt'; sombra?: boolean;
   animar: boolean; atraso: number; duracao: number;
+  /** num remendo (pontas retas), se o início/fim coincide com a ponta do cabo: arredonda e põe falcaça */
+  chicotes?: [boolean, boolean];
+  /** bitola do cabo (px do corpo) */
+  largura?: number;
 }) {
+  const LARGURA = largura ?? LARGURA_PADRAO;
   if (a.length < 2) return null;
   const d = caminho(a);
   const ini = a[0]!.s, fim = a[a.length - 1]!.s, len = fim - ini;
-  const falcacas = pontas === 'round' ? [recorte(a, ini + 2, ini + 9), recorte(a, fim - 9, fim - 2)] : [];
+  const redondo = pontas === 'round';
+  const temChicote: [boolean, boolean] = [redondo || chicotes[0], redondo || chicotes[1]];
+  const falcacas = [
+    temChicote[0] ? recorte(a, ini + 2, ini + 9) : [],
+    temChicote[1] ? recorte(a, fim - 9, fim - 2) : [],
+  ].filter((f) => f.length > 1);
+  // tampinha redonda na ponta de um remendo: contorno ANTES do corpo (para não riscar o corpo), corpo depois
+  const tampas = !redondo
+    ? [temChicote[0] ? recorte(a, ini, ini + 1) : [], temChicote[1] ? recorte(a, fim - 1, fim) : []].filter((t) => t.length > 1)
+    : [];
   const sombraEl = sombra && (
     <path
       d={d} transform="translate(3,5)" fill="none" stroke={INK} strokeOpacity={0.16} strokeWidth={LARGURA + 4} strokeLinecap="round" strokeLinejoin="round"
@@ -37,11 +54,14 @@ function Peca({
   );
   const corpo = (
     <>
+      {tampas.map((t, i) => <path key={`to${i}`} d={caminho(t)} fill="none" stroke={INK} strokeWidth={LARGURA + 4.5} strokeLinecap="round" />)}
       <path d={d} fill="none" stroke={INK} strokeWidth={LARGURA + 4.5} strokeLinecap={pontas} strokeLinejoin="round" />
+      {tampas.map((t, i) => <path key={`tc${i}`} d={caminho(t)} fill="none" stroke={cor.corpo} strokeWidth={LARGURA} strokeLinecap="round" />)}
       <path d={d} fill="none" stroke={cor.corpo} strokeWidth={LARGURA} strokeLinecap={pontas} strokeLinejoin="round" />
       <path d={d} fill="none" stroke={cor.claro} strokeOpacity={0.55} strokeWidth={LARGURA * 0.38} strokeLinecap={pontas} strokeLinejoin="round" />
       <path
-        d={trancado(inteiro ?? a, LARGURA / 2 - 2, 6.5, 6, ini - 6, fim)}
+        // só listras inteiras dentro do pedaço (uma listra "pendurada" fora dele ficaria solta sobre outro cabo)
+        d={trancado(inteiro ?? a, LARGURA / 2 - 2, 6.5, 6, ini, fim - 6)}
         fill="none" stroke={cor.listra} strokeWidth={1.7} strokeLinecap="butt" strokeOpacity={0.85}
       />
       {falcacas.map((f, i) => (
@@ -72,7 +92,19 @@ function Peca({
   );
 }
 
-/** Cabo enrolado com "?" — mostrado antes da resposta quando a pergunta é "qual nó usar". */
+/** Bancada (papel com hachura): fundo de todas as cenas de nó. */
+function Bancada() {
+  return (
+    <>
+      <rect width="400" height="260" fill={COR.papel} />
+      <g opacity=".07" stroke={INK}>
+        {Array.from({ length: 16 }, (_, i) => <line key={i} x1={i * 30} y1="0" x2={i * 30 - 80} y2="260" strokeWidth="1" />)}
+      </g>
+    </>
+  );
+}
+
+/** Fantasma (placeholder único): mesma bancada, cabo enrolado em tinta a 15% e o disco "?". */
 function CaboEnrolado() {
   const voltas = [22, 38, 54, 70].map((r) => {
     const pts: [number, number, number][] = Array.from({ length: 41 }, (_, i) => {
@@ -83,61 +115,89 @@ function CaboEnrolado() {
   });
   const ponta = geometria([[200 + 70 * 1.5, 135, 0], [330, 180, 0], [380, 175, 0]]);
   return (
-    <svg className={s.svg} viewBox="0 0 400 260" role="img" aria-label="Cabo enrolado: qual nó usar?">
-      <rect width="400" height="260" fill="#F5F1E6" />
-      {[...voltas, ponta].map((g, i) => (
-        <Peca key={i} id={`enrolado-${i}`} a={g.amostras} cor={CORES[0]!} pontas="round" sombra animar={false} atraso={0} duracao={0} />
-      ))}
-      <g transform="translate(200,135)">
-        <circle r="26" fill="var(--azul)" stroke={INK} strokeWidth="3.5" />
-        <text y="11" textAnchor="middle" fontSize="32" fontWeight="900" fill="#fff" style={{ fontFamily: 'var(--fonte)' }}>?</text>
+    <svg className={s.svg} viewBox="0 0 400 260" role="img" aria-label="Qual nó usar?">
+      <Bancada />
+      <g opacity={0.15}>
+        {[...voltas, ponta].map((g, i) => (
+          <path key={i} d={caminho(g.amostras)} fill="none" stroke={INK} strokeWidth={LARGURA_PADRAO + 4.5} strokeLinecap="round" />
+        ))}
       </g>
+      <DiscoPergunta x={200} y={135} />
+      <Placa>Marinharia • qual nó?</Placa>
     </svg>
   );
 }
 
 export function CenaNo({
-  no, animar = true, revelado = false, oculto = false, prefixo = '',
-}: { no: NoId; animar?: boolean; revelado?: boolean; oculto?: boolean; prefixo?: string }) {
+  no, animar = true, revelado = false, oculto = false,
+}: { no: NoId; animar?: boolean; revelado?: boolean; oculto?: boolean }) {
+  const idc = useIdCena();
   if (oculto) return <CaboEnrolado />;
   const def = NOS[no];
   const geos: CaboGeo[] = def.cabos.map((c) => geometria(c.pontos));
   const temObjeto = Boolean(def.objeto);
+  const larguras = def.cabos.map((c) => c.largura ?? LARGURA_PADRAO);
   const frente = temObjeto ? trechosNaFrente(geos) : [];
-  const cruz = cruzamentos(geos).filter((c) => !temObjeto || c.z > 0.15 || c.z < -0.15);
+  // Remendos de cruzamento vão até os cabos se separarem, sem parar por causa do objeto. Com objeto,
+  // cada remendo é desenhado inteiro, mas só FORA da silhueta (máscara); a parte com z > 0,15
+  // (na frente do objeto) é desenhada também sem máscara.
+  const cruz = cruzamentos(geos, larguras);
   const corDe = (cabo: number) => CORES[def.cabos[cabo]!.cor ?? cabo]!;
+  const idFora = idc('fora');
 
-  const remendo = (t: Trecho, k: string) => {
+  const peca = (t: Trecho, k: string) => {
     const L = geos[t.cabo]!.comprimento;
     return (
       <Peca
-        key={k} id={`${prefixo}${no}-${k}`} a={recorte(geos[t.cabo]!.amostras, t.ini, t.fim)} inteiro={geos[t.cabo]!.amostras}
-        cor={corDe(t.cabo)} pontas="butt"
+        key={k} id={idc(`m-${k}`)} a={recorte(geos[t.cabo]!.amostras, t.ini, t.fim)} inteiro={geos[t.cabo]!.amostras}
+        cor={corDe(t.cabo)} pontas="butt" chicotes={[t.ini <= 0.5, t.fim >= L - 0.5]} largura={larguras[t.cabo]}
         animar={animar} atraso={(t.ini / L) * DURACAO} duracao={((t.fim - t.ini) / L) * DURACAO}
       />
+    );
+  };
+  const remendo = (t: Trecho, k: string) => {
+    if (!def.silhueta) return peca(t, k);
+    // sub-trechos na frente do objeto (z > 0,15) dentro do remendo
+    const frentes: Trecho[] = [];
+    let ini: number | null = null;
+    const am = recorte(geos[t.cabo]!.amostras, t.ini, t.fim);
+    am.forEach((p, i) => {
+      const f = p.z > 0.15;
+      if (f && ini === null) ini = p.s;
+      if (ini !== null && (!f || i === am.length - 1)) { frentes.push({ ...t, ini, fim: p.s }); ini = null; }
+    });
+    return (
+      <g key={k}>
+        <g mask={`url(#${idFora})`}>{peca(t, `${k}m`)}</g>
+        {frentes.map((f, i) => peca(f, `${k}f${i}`))}
+      </g>
     );
   };
 
   return (
     <svg className={s.svg} viewBox="0 0 400 260" role="img" aria-label={`Desenho do nó: ${def.nome}`}>
-      <rect width="400" height="260" fill="#F5F1E6" />
-      <g opacity=".07" stroke={INK}>
-        {Array.from({ length: 16 }, (_, i) => <line key={i} x1={i * 30} y1="0" x2={i * 30 - 80} y2="260" strokeWidth="1" />)}
-      </g>
+      <Bancada />
+      {def.silhueta && (
+        <mask id={idFora} maskUnits="userSpaceOnUse" x="0" y="0" width="400" height="260">
+          <rect width="400" height="260" fill="#fff" />
+          <path d={def.silhueta} fill="#000" stroke="#000" strokeWidth={4} />
+        </mask>
+      )}
       {def.fundo as ReactNode}
       {geos.map((g, i) => (
-        <Peca key={`b${i}`} id={`${prefixo}${no}-b${i}`} a={g.amostras} cor={corDe(i)} pontas="round" sombra animar={animar} atraso={0} duracao={DURACAO} />
+        <Peca key={`b${i}`} id={idc(`m-b${i}`)} a={g.amostras} cor={corDe(i)} pontas="round" sombra animar={animar} atraso={0} duracao={DURACAO} largura={larguras[i]} />
       ))}
       {def.objeto as ReactNode}
-      {frente.map((t, i) => remendo(t, `f${i}`))}
+      {frente.map((t, i) => peca(t, `f${i}`))}
       {cruz.map((t, i) => remendo(t, `c${i}`))}
       {def.rotulos && (
-        <g className={s.revelar} style={revelado ? { opacity: 1 } : undefined}>
+        <g className={s.revelar}>
           {def.rotulos.map((r, i) => (
-            <Rotulo key={i} x={r[0]} y={r[1]} anc={r[3] ?? 'middle'}>{r[2]}</Rotulo>
+            <Rotulo key={i} x={r[0]} y={r[1]} anc={r[3] ?? 'middle'} alvo={r[4]}>{r[2]}</Rotulo>
           ))}
         </g>
       )}
+      <Placa>{revelado ? `Marinharia • ${def.nome}` : 'Marinharia'}</Placa>
     </svg>
   );
 }

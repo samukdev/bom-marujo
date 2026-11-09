@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { CenaNo } from '@/components/cenas/CenaNo';
+import { CenaInterativa } from '@/components/cenas/CenaInterativa';
 import { NOS, type NoId } from '@/lib/nos/catalogo';
 import { USOS_NOS } from '@/content/nos';
 
@@ -14,8 +14,8 @@ export default function CadernoDeNos() {
       <div style={{ display: 'grid', gap: 22 }}>
         {(Object.keys(NOS) as NoId[]).map((id) => (
           <section key={id} style={{ background: 'var(--card)', border: '2px solid var(--borda)', borderRadius: 18, overflow: 'hidden' }}>
-            <div style={{ borderBottom: '2px solid var(--borda)' }}>
-              <CenaNo no={id} revelado />
+            <div style={{ padding: '12px 12px 0' }}>
+              <CenaInterativa spec={{ tipo: 'no', no: id }} revelado />
             </div>
             <div style={{ padding: '12px 16px 16px' }}>
               <h2 style={{ margin: 0, fontSize: 20, fontWeight: 900 }}>{NOS[id].nome}</h2>

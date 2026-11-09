@@ -87,11 +87,12 @@ export function geometria(pontos: Ponto[]): CaboGeo {
   for (let i = 0; i < n - 1; i++) pts.push(...catmullRom(P(i - 1), P(i), P(i + 1), P(i + 2), 24));
   pts = reamostrar(pts, PASSO);
 
-  // suavização (pontas fixas): remove os cantos vivos que sobram entre pontos de controle próximos
+  // suavização (pontas fixas): remove os cantos vivos que sobram entre pontos de controle próximos.
+  // Só x e y! Suavizar z "espalharia" a altura e o cabo passaria para a frente de um objeto antes da hora.
   for (let it = 0; it < SUAVIZACAO; it++) {
     const novo = pts.map((p) => [...p] as V);
     for (let i = 1; i < pts.length - 1; i++) {
-      for (let k = 0; k < 3; k++) novo[i]![k] = 0.25 * pts[i - 1]![k]! + 0.5 * pts[i]![k]! + 0.25 * pts[i + 1]![k]!;
+      for (let k = 0; k < 2; k++) novo[i]![k] = 0.25 * pts[i - 1]![k]! + 0.5 * pts[i]![k]! + 0.25 * pts[i + 1]![k]!;
     }
     pts = novo;
   }
@@ -191,24 +192,68 @@ function intersecao(a: Amostra, b: Amostra, c: Amostra, d: Amostra) {
  * Até onde o trecho de cima precisa ir, a partir do cruzamento, para os dois cabos se separarem
  * de verdade (em cruzamentos rasos, ±15 px não basta e o de baixo "corta" o de cima).
  */
-function alcance(sobre: Amostra[], i0: number, sob: Amostra[], j0: number, dir: 1 | -1, folga: number): number {
-  const ini = Math.max(0, j0 - 80), fim = Math.min(sob.length - 1, j0 + 80);
+function alcance(
+  sobre: Amostra[], i0: number, sob: Amostra[], j0: number, dir: 1 | -1, folga: number,
+  mesmoCabo: boolean, zMin?: number,
+): number {
+  // só a vizinhança do trecho de baixo (±60 px); no mesmo cabo, ignora o próprio trecho de cima
+  const ini = Math.max(0, j0 - 24), fim = Math.min(sob.length - 1, j0 + 24);
+  const minDist = Math.ceil(30 / PASSO);
   let i = i0;
-  for (let passos = 0; passos < 60; passos++) {
+  for (let passos = 0; passos < 40; passos++) {
     const prox = i + dir;
     if (prox < 0 || prox >= sobre.length) break;
+    if (zMin !== undefined && sobre[prox]!.z < zMin) break; // não entra em trecho que fica atrás do objeto
     i = prox;
     const p = sobre[i]!;
     let min = Infinity;
-    for (let j = ini; j <= fim; j++) min = Math.min(min, Math.hypot(sob[j]!.x - p.x, sob[j]!.y - p.y));
+    for (let j = ini; j <= fim; j++) {
+      if (mesmoCabo && Math.abs(j - i) < minDist) continue;
+      min = Math.min(min, Math.hypot(sob[j]!.x - p.x, sob[j]!.y - p.y));
+    }
     if (min > folga) break;
   }
   return sobre[i]!.s + dir * 3;
 }
 
+export interface Passagem {
+  cabo: number;
+  s: number;
+  z: number;
+  x: number;
+  y: number;
+}
+export interface Cruzamento {
+  a: Passagem;
+  b: Passagem;
+}
+
+/** Lista todos os cruzamentos com as duas passagens (para relatórios de topologia). */
+export function listarCruzamentos(cabos: CaboGeo[]): Cruzamento[] {
+  const res: Cruzamento[] = [];
+  const minDist = Math.ceil(30 / PASSO);
+  for (let i = 0; i < cabos.length; i++) {
+    for (let j = i; j < cabos.length; j++) {
+      const A = cabos[i]!.amostras, B = cabos[j]!.amostras;
+      for (let a = 0; a < A.length - 1; a++) {
+        for (let b = i === j ? a + minDist : 0; b < B.length - 1; b++) {
+          const hit = intersecao(A[a]!, A[a + 1]!, B[b]!, B[b + 1]!);
+          if (!hit) continue;
+          const lerp = (p: Amostra, q: Amostra, t: number) => ({
+            s: p.s + t * (q.s - p.s), z: p.z + t * (q.z - p.z), x: p.x + t * (q.x - p.x), y: p.y + t * (q.y - p.y),
+          });
+          res.push({ a: { cabo: i, ...lerp(A[a]!, A[a + 1]!, hit.t) }, b: { cabo: j, ...lerp(B[b]!, B[b + 1]!, hit.u) } });
+        }
+      }
+    }
+  }
+  return res;
+}
+
 /** Cruzamentos entre trechos (do mesmo cabo ou de cabos diferentes). Retorna o trecho que fica POR CIMA. */
-export function cruzamentos(cabos: CaboGeo[], folga = 19): Trecho[] {
-  const res: Trecho[] = [];
+export function cruzamentos(cabos: CaboGeo[], larguras: number[] = [], zMin?: number): Trecho[] {
+  const res: (Trecho & { centro: number })[] = [];
+  const porBaixo: { cabo: number; s: number }[] = [];
   const minDist = Math.ceil(30 / PASSO); // ignora vizinhos imediatos do mesmo cabo
   for (let i = 0; i < cabos.length; i++) {
     for (let j = i; j < cabos.length; j++) {
@@ -219,20 +264,65 @@ export function cruzamentos(cabos: CaboGeo[], folga = 19): Trecho[] {
           if (!hit) continue;
           const za = A[a]!.z + hit.t * (A[a + 1]!.z - A[a]!.z);
           const zb = B[b]!.z + hit.u * (B[b + 1]!.z - B[b]!.z);
+          const sa = A[a]!.s + hit.t * (A[a + 1]!.s - A[a]!.s);
+          const sb = B[b]!.s + hit.u * (B[b + 1]!.s - B[b]!.s);
           const aPorCima = za >= zb;
-          const [cabo, sobre, iS, sob, jS, z] = aPorCima ? [i, A, a, B, b, za] : [j, B, b, A, a, zb];
+          const [cabo, sobre, iS, sob, jS, z, centro] = aPorCima ? [i, A, a, B, b, za, sa] : [j, B, b, A, a, zb, sb];
+          porBaixo.push(aPorCima ? { cabo: j, s: sb } : { cabo: i, s: sa });
           const L = cabos[cabo]!.comprimento;
+          const folga = ((larguras[i] ?? 12) + (larguras[j] ?? 12)) / 2 + 7;
           res.push({
-            cabo,
-            ini: Math.max(0, alcance(sobre, iS, sob, jS, -1, folga)),
-            fim: Math.min(L, alcance(sobre, iS + 1, sob, jS, 1, folga)),
-            z,
+            cabo, centro, z,
+            ini: Math.max(0, alcance(sobre, iS, sob, jS, -1, folga, i === j, zMin)),
+            fim: Math.min(L, alcance(sobre, iS + 1, sob, jS, 1, folga, i === j, zMin)),
           });
         }
       }
     }
   }
-  return res.sort((x, y) => x.z - y.z);
+  void porBaixo;
+  return ordenarRemendos(cabos, res.map((r) => ({ cabo: r.cabo, ini: r.ini, fim: r.fim, z: r.z })), larguras);
+}
+
+/**
+ * Ordem de desenho dos remendos pela SOBREPOSIÇÃO real (e não só pelo z do centro do cruzamento):
+ * onde dois remendos se tocam, desenha por último o que tem z local maior naquele ponto. Ordenação
+ * topológica (Kahn); empates e ciclos caem na ordem por z.
+ */
+export function ordenarRemendos(cabos: CaboGeo[], ts: Trecho[], larguras: number[] = []): Trecho[] {
+  const segs = ts.map((t) => recorte(cabos[t.cabo]!.amostras, t.ini, t.fim));
+  const n = ts.length;
+  const depois: number[][] = Array.from({ length: n }, () => []);
+  const grau = new Array<number>(n).fill(0);
+  for (let i = 0; i < n; i++) {
+    for (let j = i + 1; j < n; j++) {
+      const a = ts[i]!, b = ts[j]!;
+      if (a.cabo === b.cabo && a.ini < b.fim && b.ini < a.fim) continue; // mesmo trecho do mesmo cabo
+      const lim = ((larguras[a.cabo] ?? 12) + (larguras[b.cabo] ?? 12)) / 2 + 4.5;
+      let min = Infinity, za = 0, zb = 0;
+      for (let p = 0; p < segs[i]!.length; p += 2) {
+        for (let q = 0; q < segs[j]!.length; q += 2) {
+          const P = segs[i]![p]!, Q = segs[j]![q]!;
+          const dd = Math.hypot(P.x - Q.x, P.y - Q.y);
+          if (dd < min) { min = dd; za = P.z; zb = Q.z; }
+        }
+      }
+      if (min >= lim || Math.abs(za - zb) < 0.05) continue;
+      const [baixo, cima] = za > zb ? [j, i] : [i, j];
+      depois[baixo]!.push(cima);
+      grau[cima]!++;
+    }
+  }
+  const ordem: number[] = [];
+  const prontos = ts.map((_, k) => k).filter((k) => grau[k] === 0);
+  while (prontos.length) {
+    prontos.sort((x, y) => ts[x]!.z - ts[y]!.z);
+    const k = prontos.shift()!;
+    ordem.push(k);
+    for (const m of depois[k]!) if (--grau[m]! === 0) prontos.push(m);
+  }
+  const resto = ts.map((_, k) => k).filter((k) => !ordem.includes(k)).sort((x, y) => ts[x]!.z - ts[y]!.z);
+  return [...ordem, ...resto].map((k) => ts[k]!);
 }
 
 /** Trechos com z acima do limiar (ficam na frente de um objeto). */

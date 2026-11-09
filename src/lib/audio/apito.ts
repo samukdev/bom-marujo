@@ -9,8 +9,8 @@ function audio(): AudioContext {
   return ctx;
 }
 
-/** Buzina de navio sintetizada: duas fundamentais em dente de serra + passa-baixa. */
-function buzina(a: AudioContext, inicio: number, dur: number) {
+/** Buzina de navio sintetizada: duas fundamentais em dente de serra + passa-baixa. Devolve os osciladores (para cancelar). */
+function buzina(a: AudioContext, inicio: number, dur: number): OscillatorNode[] {
   const g = a.createGain();
   const f = a.createBiquadFilter();
   f.type = 'lowpass';
@@ -19,6 +19,7 @@ function buzina(a: AudioContext, inicio: number, dur: number) {
   g.gain.linearRampToValueAtTime(0.22, inicio + 0.06);
   g.gain.setValueAtTime(0.22, inicio + dur - 0.12);
   g.gain.linearRampToValueAtTime(0, inicio + dur);
+  const osc: OscillatorNode[] = [];
   for (const fr of [118, 177]) {
     const o = a.createOscillator();
     o.type = 'sawtooth';
@@ -26,9 +27,11 @@ function buzina(a: AudioContext, inicio: number, dur: number) {
     o.connect(f);
     o.start(inicio);
     o.stop(inicio + dur + 0.05);
+    osc.push(o);
   }
   f.connect(g);
   g.connect(a.destination);
+  return osc;
 }
 
 export interface OpcoesToque {
@@ -38,20 +41,40 @@ export interface OpcoesToque {
   aoApitar?: (indice: number, duracaoS: number) => void;
 }
 
-/** Toca o sinal e resolve quando termina. */
-export function tocarSinal(sinal: SinalSonoro, opts: OpcoesToque = {}): Promise<void> {
+export interface Reproducao {
+  /** resolve quando o sinal termina (ou é cancelado) */
+  fim: Promise<void>;
+  /** para o som e os eventos de apito na hora (trocar de questão, desmontar) */
+  cancelar: () => void;
+}
+
+/** Toca o sinal. Devolve um controle para saber quando acaba e para cancelar. */
+export function tocarSinal(sinal: SinalSonoro, opts: OpcoesToque = {}): Reproducao {
   const a = audio();
   const intervalo = opts.lento ? 2 : 1;
   let t = a.currentTime + 0.1;
   const timers: number[] = [];
+  const osc: OscillatorNode[] = [];
   sinal.forEach((toque, i) => {
     const dur = DURACAO_S[toque];
-    buzina(a, t, dur);
+    osc.push(...buzina(a, t, dur));
     timers.push(window.setTimeout(() => opts.aoApitar?.(i, dur), (t - a.currentTime) * 1000));
     t += dur + intervalo;
   });
   const total = (t - a.currentTime - intervalo) * 1000;
-  return new Promise((r) => window.setTimeout(r, total));
+  let resolver: () => void = () => {};
+  const fim = new Promise<void>((r) => {
+    resolver = r;
+    timers.push(window.setTimeout(r, total));
+  });
+  return {
+    fim,
+    cancelar: () => {
+      timers.forEach((x) => window.clearTimeout(x));
+      osc.forEach((o) => { try { o.stop(); } catch { /* já parou */ } });
+      resolver();
+    },
+  };
 }
 
 /** Efeito curto de acerto/erro. */

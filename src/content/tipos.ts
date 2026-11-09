@@ -12,7 +12,10 @@ export type CenaSpec =
       /** marcação do observador a partir da proa da embarcação (0 = de proa, 90 = través BE, 180 = popa) */
       aspecto: number;
     }
-  | { tipo: 'canal'; sentido: Sentido }
+  /** `oculto`: antes da resposta as boias aparecem como fantasmas (sem cor nem forma) */
+  | { tipo: 'canal'; sentido: Sentido; oculto?: boolean }
+  /** close das duas marcas laterais (formato e tope) */
+  | { tipo: 'marcas'; oculto?: boolean }
   | {
       tipo: 'encontro';
       sinal: SinalId;
@@ -20,6 +23,8 @@ export type CenaSpec =
       manobra: 'boreste' | 'bombordo' | 'atras' | 'nenhuma';
       /** a sua lancha também manobra para boreste (roda a roda) */
       vocePara?: 'boreste';
+      /** onde está o navio: bem pela proa (roda a roda) ou aberto pela bochecha de boreste */
+      posicao?: 'proa' | 'boreste';
     }
   | { tipo: 'bordos' }
   /** nó desenhado; `oculto` mostra um cabo enrolado com "?" até a resposta (para não entregar a resposta) */

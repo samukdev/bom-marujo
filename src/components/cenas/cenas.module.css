@@ -1,71 +1,69 @@
+/* Padrão visual das cenas — ver docs/padrao-visual.md */
 .svg { display: block; width: 100%; height: auto; }
 
-.onda { animation: onda var(--d, 6s) linear infinite; }
+/* moldura + barra de controles (fora do SVG) */
+.quadro { margin-bottom: 18px; }
+.moldura {
+  border: 3px solid var(--tinta); border-radius: 16px; overflow: hidden; background: #000;
+  box-shadow: 0 6px 0 var(--tinta);
+}
+.controles { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 12px; min-height: 40px; }
+.aviso { margin-right: auto; font-size: 13px; font-weight: 800; color: var(--texto-2); }
+.pilula {
+  font: inherit; font-weight: 900; font-size: 14px; padding: 8px 14px; border-radius: 99px; cursor: pointer;
+  border: 2px solid var(--borda); background: var(--card); color: var(--azul); box-shadow: 0 3px 0 var(--borda);
+}
+.pilulaForte { background: var(--azul); color: #fff; border-color: var(--azul); box-shadow: 0 3px 0 var(--azul-escuro); }
+.pilula:active:not(:disabled) { transform: translateY(2px); box-shadow: none; }
+.pilula:disabled { opacity: 0.55; cursor: default; }
+
+/* nível 1 — ambiente (no máximo 2 loops por cena: ondas + balanço) */
+.onda { animation: onda var(--d, 8s) linear infinite; }
 @keyframes onda { to { transform: translateX(var(--w, -80px)); } }
-
-.balanca { animation: balanca 3.2s ease-in-out infinite; transform-origin: 0 0; }
+.balanca { animation: balanca 4s ease-in-out infinite; transform-origin: 0 0; }
 @keyframes balanca {
-  0%, 100% { transform: translateY(0) rotate(-1.2deg); }
-  50% { transform: translateY(3px) rotate(1.2deg); }
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(2px) rotate(1deg); }
 }
-
-.halo { animation: halo 2.4s ease-in-out infinite; }
-@keyframes halo { 50% { opacity: 0.55; } }
-
-.reflexo { animation: reflexo 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: top; }
-@keyframes reflexo { 50% { opacity: 0.2; transform: scaleX(0.6); } }
-
-.estrela { animation: pisca 3s ease-in-out infinite; }
-@keyframes pisca { 50% { opacity: 0.2; } }
-
-.lampejo { animation: lampejo 3s steps(1) infinite; opacity: 0; }
-@keyframes lampejo { 0% { opacity: 1; } 12% { opacity: 0; } }
-
-.boia { animation: boia 2.8s ease-in-out infinite; }
-@keyframes boia {
-  0%, 100% { transform: translateY(0) rotate(-3deg); }
-  50% { transform: translateY(2px) rotate(3deg); }
-}
-
-.avanco { animation: avanco 3.6s linear infinite; transform-origin: 200px 104px; opacity: 0; }
-@keyframes avanco {
-  0% { transform: scale(0.15); opacity: 0; }
-  20% { opacity: 0.8; }
-  100% { transform: scale(2.2); opacity: 0; }
-}
-
-.nuvem { animation: nuvem 40s linear infinite; }
-@keyframes nuvem { from { transform: translateX(-80px); } to { transform: translateX(480px); } }
-
+.boia { animation: balanca 4s ease-in-out infinite; }
 .esteira { stroke-dasharray: 6 8; animation: esteira 0.6s linear infinite; }
 @keyframes esteira { to { stroke-dashoffset: -14; } }
 
-.revelar { opacity: 0; transition: opacity 0.5s 0.2s; }
-.revelado .revelar { opacity: 1; }
-
-.guina { transition: transform 2.4s cubic-bezier(0.45, 0, 0.3, 1); }
-
-.fumaca circle { opacity: 0; transform-box: fill-box; transform-origin: center; animation: fumaca 1s ease-out forwards; }
-.fumaca circle:nth-child(2) { animation-delay: 0.15s; }
-.fumaca circle:nth-child(3) { animation-delay: 0.3s; }
-.fumacaParada circle { opacity: 0; }
-@keyframes fumaca {
-  0% { opacity: 0.95; transform: translate(0, 0) scale(0.4); }
-  100% { opacity: 0; transform: translate(14px, -18px) scale(1.6); }
+/* nível 2 — sinal */
+.halo { animation: halo 2.4s ease-in-out infinite; }
+@keyframes halo { 50% { opacity: 0.55; } }
+.lampejo { animation: lampejo 3s steps(1) infinite; }
+@keyframes lampejo { 0% { opacity: 1; } 12% { opacity: 0.12; } }
+.fumaca circle {
+  opacity: 0; transform-box: fill-box; transform-origin: center;
+  animation: fumaca var(--dur, 1s) ease-out forwards;
 }
+.fumaca circle:nth-child(2) { animation-delay: 0.12s; }
+.fumaca circle:nth-child(3) { animation-delay: 0.24s; }
+@keyframes fumaca {
+  0% { opacity: 0.95; transform: translate(0, 0) scale(0.5); }
+  70% { opacity: 0.8; }
+  100% { opacity: 0; transform: translate(10px, -22px) scale(1.6); }
+}
+
+/* nível 3 — revelação: ação 2,4 s; seta e rótulos entram com fade + subida de 4 px em 0,3 s */
+.guina { transition: transform 2.4s cubic-bezier(0.45, 0, 0.3, 1); }
+/* --atraso-rotulo: 2,4 s nas cenas com ação (rótulos só depois da ação); 0,15 s nas estáticas.
+   Animação (e não transição) para valer também quando a cena já MONTA revelada (ex.: rolo → nó). */
+.revelar { opacity: 0; }
+.revelado .revelar { opacity: 1; animation: rotuloEntra 0.3s ease var(--atraso-rotulo, 0.15s) both; }
+@keyframes rotuloEntra { from { opacity: 0; transform: translateY(4px); } }
+.surge { animation: surge 2.4s cubic-bezier(0.45, 0, 0.3, 1) both; }
+@keyframes surge { from { opacity: 0; transform: translateY(6px); } }
 
 /* nós: o cabo "vai sendo passado" ao longo do caminho */
 .noBase { animation-name: noBase; animation-timing-function: linear; animation-fill-mode: both; }
 @keyframes noBase { from { stroke-dashoffset: var(--L); } to { stroke-dashoffset: 0; } }
 .noSombra { animation: noSombra 0.5s ease-out both; }
 @keyframes noSombra { from { opacity: 0; } }
-.noFaixa { animation-name: noFaixa; animation-timing-function: linear; animation-fill-mode: both; }
-@keyframes noFaixa {
-  from { stroke-dasharray: 0 var(--a) 0 var(--L); }
-  to { stroke-dasharray: 0 var(--a) var(--w) var(--L); }
-}
 
 @media (prefers-reduced-motion: reduce) {
   .svg * { animation: none !important; transition: none !important; }
-  .lampejo { opacity: 1; }
+  .revelar { transform: none; }
+  .fumaca circle { opacity: 0.9; }
 }
