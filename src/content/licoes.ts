@@ -1,4 +1,5 @@
 import type { Licao, Tema } from './tipos';
+import { USOS_NOS } from './nos';
 
 /*
  * Conteúdo escrito com nossas palavras, a partir do RIPEAM-72 e do sistema IALA.
@@ -220,12 +221,171 @@ export const LICOES: Licao[] = [
   },
 ];
 
+LICOES.push(
+  {
+    id: 'nos-arremate-emendas',
+    temaId: 'marinharia',
+    titulo: 'Nós I: arremate e emendas',
+    descricao: 'Nó de oito, nó direito e nó de escota',
+    conceitos: [
+      {
+        id: 'c-oito',
+        titulo: 'Nó de oito',
+        texto: USOS_NOS.oito.uso,
+        cena: { tipo: 'no', no: 'oito' },
+        falaMarujo: 'Chicote é a ponta do cabo. Firme é a parte que aguenta o esforço.',
+      },
+      {
+        id: 'c-direito',
+        titulo: 'Nó direito',
+        texto: USOS_NOS.direito.uso,
+        cena: { tipo: 'no', no: 'direito' },
+        falaMarujo: 'Mesma grossura? Nó direito. Grossuras diferentes? Escota!',
+        pose: 'orgulhoso',
+      },
+      {
+        id: 'c-escota',
+        titulo: 'Nó de escota',
+        texto: USOS_NOS.escota.uso,
+        cena: { tipo: 'no', no: 'escota' },
+        pose: 'pensando',
+        falaMarujo: 'O grosso faz a alça; o fino abraça o pescoço dela e morde a si mesmo.',
+      },
+    ],
+    questoes: [
+      {
+        id: 'q-id-oito',
+        enunciado: 'Que nó é este, feito na ponta do cabo?',
+        cena: { tipo: 'no', no: 'oito' },
+        opcoes: ['Nó de oito', 'Nó direito', 'Lais de guia', 'Volta do fiel'],
+        correta: 0,
+        explicacao: 'É o nó de oito, um nó de arremate: engrossa a ponta do cabo para ela não escapar de um moitão ou argola.',
+        referencia: 'Marinharia · nós de arremate',
+      },
+      {
+        id: 'q-uso-direito',
+        enunciado: 'Você precisa emendar dois cabos de MESMA bitola. Qual nó usar?',
+        cena: { tipo: 'no', no: 'direito', oculto: true },
+        opcoes: ['Nó direito', 'Nó de escota', 'Nó de oito', 'Volta de cunho'],
+        correta: 0,
+        explicacao: 'Para cabos de mesma bitola, nó direito. Se as grossuras forem diferentes, o certo é o nó de escota.',
+        referencia: 'Marinharia · emendas',
+      },
+      {
+        id: 'q-uso-escota',
+        enunciado: 'Um cabo grosso e um cabo fino precisam ser emendados com segurança. Qual nó?',
+        cena: { tipo: 'no', no: 'escota', oculto: true },
+        opcoes: ['Nó de escota', 'Nó direito', 'Lais de guia', 'Nó de oito'],
+        correta: 0,
+        explicacao: 'O nó de escota une cabos de bitolas diferentes: o grosso forma o seio e o fino dá a volta e morde a si mesmo.',
+        referencia: 'Marinharia · emendas',
+      },
+      {
+        id: 'q-uso-oito',
+        enunciado: 'Para o cabo não escapar do moitão (roldana), que nó você dá no chicote?',
+        cena: { tipo: 'no', no: 'oito', oculto: true },
+        opcoes: ['Nó de oito', 'Volta do fiel', 'Nó de escota', 'Volta de cunho'],
+        correta: 0,
+        explicacao: 'O nó de oito é o arremate clássico: segura bem e desfaz fácil, mesmo depois de apertado.',
+        referencia: 'Marinharia · nós de arremate',
+      },
+      {
+        id: 'q-id-escota',
+        enunciado: 'Que nó está unindo estes dois cabos?',
+        cena: { tipo: 'no', no: 'escota' },
+        opcoes: ['Nó de escota', 'Nó direito', 'Volta do fiel', 'Lais de guia'],
+        correta: 0,
+        explicacao: 'Repare: um cabo forma uma alça em U e o outro abraça o pescoço dela, passando por baixo de si mesmo. É o nó de escota.',
+        referencia: 'Marinharia · emendas',
+      },
+    ],
+  },
+  {
+    id: 'nos-alcas-voltas',
+    temaId: 'marinharia',
+    titulo: 'Nós II: alças e voltas',
+    descricao: 'Lais de guia, volta do fiel e volta de cunho',
+    conceitos: [
+      {
+        id: 'c-lais',
+        titulo: 'Lais de guia',
+        texto: USOS_NOS['lais-de-guia'].uso,
+        cena: { tipo: 'no', no: 'lais-de-guia' },
+        falaMarujo: 'O coelho sai da toca, dá a volta na árvore e volta pra toca. Nunca esqueci!',
+      },
+      {
+        id: 'c-fiel',
+        titulo: 'Volta do fiel',
+        texto: USOS_NOS['volta-do-fiel'].uso,
+        cena: { tipo: 'no', no: 'volta-do-fiel' },
+        pose: 'aprovando',
+        falaMarujo: 'Duas voltas e o chicote por baixo da cruz. Defensa no lugar!',
+      },
+      {
+        id: 'c-cunho',
+        titulo: 'Volta de cunho',
+        texto: USOS_NOS['volta-de-cunho'].uso,
+        cena: { tipo: 'no', no: 'volta-de-cunho' },
+        pose: 'ensinando',
+        falaMarujo: USOS_NOS['volta-de-cunho'].dica,
+      },
+    ],
+    questoes: [
+      {
+        id: 'q-id-lais',
+        enunciado: 'Que nó é este, que forma uma alça fixa na ponta do cabo?',
+        cena: { tipo: 'no', no: 'lais-de-guia' },
+        opcoes: ['Lais de guia', 'Nó de oito', 'Volta do fiel', 'Nó direito'],
+        correta: 0,
+        explicacao: 'Lais de guia: a alça não corre nem aperta, e o nó é fácil de desfazer depois.',
+        referencia: 'Marinharia · alças',
+      },
+      {
+        id: 'q-uso-lais',
+        enunciado: 'Homem ao mar! Você vai jogar um cabo com uma alça que NÃO aperte em volta do corpo da vítima. Qual nó?',
+        cena: { tipo: 'no', no: 'lais-de-guia', oculto: true },
+        opcoes: ['Lais de guia', 'Volta do fiel', 'Nó de oito', 'Nó direito'],
+        correta: 0,
+        explicacao: 'A alça do lais de guia é fixa: não estrangula a pessoa quando o cabo é puxado. É o nó do salvamento.',
+        referencia: 'Marinharia · resgate de homem ao mar',
+      },
+      {
+        id: 'q-uso-cunho',
+        enunciado: 'Atracando no cais: como você prende o cabo de amarração no cunho?',
+        cena: { tipo: 'no', no: 'volta-de-cunho', oculto: true },
+        opcoes: ['Volta de cunho', 'Nó de escota', 'Nó direito', 'Nó de oito'],
+        correta: 0,
+        explicacao: 'Volta de cunho: uma volta redonda, cotes cruzados em "oito" sobre as orelhas e um cote mordido para travar.',
+        referencia: 'Marinharia · amarração',
+      },
+      {
+        id: 'q-uso-fiel',
+        enunciado: 'Você quer pendurar rapidamente a defensa no balaústre. Que volta usar?',
+        cena: { tipo: 'no', no: 'volta-do-fiel', oculto: true },
+        opcoes: ['Volta do fiel', 'Lais de guia', 'Nó de escota', 'Nó direito'],
+        correta: 0,
+        explicacao: 'A volta do fiel é rápida de dar e de ajustar a altura: perfeita para defensas.',
+        referencia: 'Marinharia · voltas',
+      },
+      {
+        id: 'q-id-cunho',
+        enunciado: 'Como se chama esta amarração?',
+        cena: { tipo: 'no', no: 'volta-de-cunho' },
+        opcoes: ['Volta de cunho', 'Volta do fiel', 'Nó de oito', 'Lais de guia'],
+        correta: 0,
+        explicacao: 'O cabo cruzado em "oito" sobre as orelhas do cunho, com o cote final travando, é a volta de cunho.',
+        referencia: 'Marinharia · amarração',
+      },
+    ],
+  },
+);
+
 export const TEMAS: Tema[] = [
   { id: 'luzes', titulo: 'Luzes de navegação', icone: '💡', licoes: ['luzes-quem-vem-la'] },
   { id: 'sons', titulo: 'Sinais sonoros', icone: '📯', licoes: ['apitos-manobra'] },
   { id: 'balizamento', titulo: 'Balizamento IALA B', icone: '🛟', licoes: ['balizamento-entrando'] },
   { id: 'governo', titulo: 'Regras de governo', icone: '🧭', licoes: [], emBreve: true },
-  { id: 'marinharia', titulo: 'Nomenclatura e marinharia', icone: '🪢', licoes: [], emBreve: true },
+  { id: 'marinharia', titulo: 'Marinharia: nós e voltas', icone: '🪢', licoes: ['nos-arremate-emendas', 'nos-alcas-voltas'] },
   { id: 'salvatagem', titulo: 'Salvatagem e sobrevivência', icone: '🦺', licoes: [], emBreve: true },
 ];
 

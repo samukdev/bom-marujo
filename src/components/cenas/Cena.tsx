@@ -3,6 +3,7 @@ import { CenaBordos } from './CenaBordos';
 import { CenaCanal } from './CenaCanal';
 import { CenaEncontro } from './CenaEncontro';
 import { CenaLuzesNoite } from './CenaLuzesNoite';
+import { CenaNo } from './CenaNo';
 import s from './cenas.module.css';
 
 /** Motor de cenas: recebe uma especificação declarativa e desenha a cena correspondente. */
@@ -15,6 +16,7 @@ export function Cena({ spec, revelado = false, apitos = 0 }: { spec: CenaSpec; r
         <CenaEncontro sinal={spec.sinal} manobra={spec.manobra} vocePara={spec.vocePara} revelado={revelado} apitos={apitos} />
       )}
       {spec.tipo === 'bordos' && <CenaBordos />}
+      {spec.tipo === 'no' && <CenaNo no={spec.no} oculto={spec.oculto && !revelado} revelado={revelado} />}
     </div>
   );
 }

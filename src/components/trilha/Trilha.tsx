@@ -19,7 +19,7 @@ export function Trilha() {
       <header className={s.header}>
         <div className={s.logo}>
           <span className={s.avatar} aria-hidden>
-            <Image src="/marujo/neutro.webp" alt="" width={420} height={640} priority />
+            <Image src="/brand/icone-192.png" alt="" width={192} height={192} priority />
           </span>
           Bom Marujo
         </div>
@@ -79,6 +79,7 @@ export function Trilha() {
         </section>
       ))}
 
+      <Link href="/nos" className={s.caderno}>🪢 Caderno de nós: veja todos os nós e para que servem</Link>
       <footer className={s.rodape}>Protótipo · conteúdo em revisão técnica</footer>
     </div>
   );

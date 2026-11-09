@@ -2,6 +2,7 @@ import type { EmbarcacaoSpec } from '@/lib/ripeam/luzes';
 import type { SinalId } from '@/lib/ripeam/sinais';
 import type { Sentido } from '@/lib/iala/boias';
 import type { Pose } from '@/components/marujo/Marujo';
+import type { NoId } from '@/lib/nos/catalogo';
 
 /** Especificação declarativa de uma cena — o motor desenha a partir disto. */
 export type CenaSpec =
@@ -20,7 +21,9 @@ export type CenaSpec =
       /** a sua lancha também manobra para boreste (roda a roda) */
       vocePara?: 'boreste';
     }
-  | { tipo: 'bordos' };
+  | { tipo: 'bordos' }
+  /** nó desenhado; `oculto` mostra um cabo enrolado com "?" até a resposta (para não entregar a resposta) */
+  | { tipo: 'no'; no: NoId; oculto?: boolean };
 
 export interface Questao {
   id: string;

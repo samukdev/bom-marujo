@@ -12,11 +12,24 @@ import s from './licao.module.css';
 
 type Passo = { tipo: 'conceito'; c: CartaoConceito } | { tipo: 'questao'; q: Questao; repeticao?: boolean };
 
+/** Embaralha as alternativas de forma determinística (mesma ordem no servidor e no cliente). */
+function embaralhar(q: Questao, sal = ''): Questao {
+  let h = 2166136261;
+  for (const ch of q.id + sal) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
+  const idx = q.opcoes.map((_, i) => i);
+  for (let i = idx.length - 1; i > 0; i--) {
+    h = Math.imul(h ^ (h >>> 15), 2246822507);
+    const j = (h >>> 0) % (i + 1);
+    [idx[i], idx[j]] = [idx[j]!, idx[i]!];
+  }
+  return { ...q, opcoes: idx.map((i) => q.opcoes[i]!), correta: idx.indexOf(q.correta) };
+}
+
 export function LessonPlayer({ licao }: { licao: Licao }) {
   const inicial = useMemo<Passo[]>(
     () => [
       ...licao.conceitos.map((c) => ({ tipo: 'conceito' as const, c })),
-      ...licao.questoes.map((q) => ({ tipo: 'questao' as const, q })),
+      ...licao.questoes.map((q) => ({ tipo: 'questao' as const, q: embaralhar(q) })),
     ],
     [licao],
   );
@@ -58,7 +71,8 @@ export function LessonPlayer({ licao }: { licao: Licao }) {
     setReacao(certo ? (seq >= 3 ? 'orgulhoso' : 'aprovando') : passo.repeticao ? 'bravo' : 'cetico');
     if (certo && !passo.repeticao) setAcertos((a) => a + 1);
     // Erros voltam no fim da lição (uma vez).
-    if (!certo && !passo.repeticao) setFila((f) => [...f, { tipo: 'questao', q: passo.q, repeticao: true }]);
+    // (na repetição, outra ordem de alternativas — para não decorar a posição)
+    if (!certo && !passo.repeticao) setFila((f) => [...f, { tipo: 'questao', q: embaralhar(passo.q, 'bis'), repeticao: true }]);
   }
 
   function ouvir(lento = false) {
@@ -122,7 +136,7 @@ export function LessonPlayer({ licao }: { licao: Licao }) {
           <>
             <div className={s.tag}>✨ Novo conceito</div>
             <h1 className={s.titulo}>{passo.c.titulo}</h1>
-            {passo.c.cena && <div className={s.cena}><Cena spec={passo.c.cena} revelado /></div>}
+            {passo.c.cena && <div className={s.cena}><Cena key={passo.c.id} spec={passo.c.cena} revelado /></div>}
             <p className={s.texto}>{passo.c.texto}</p>
             {passo.c.falaMarujo && (
               <div className={s.marujo}>
@@ -135,7 +149,7 @@ export function LessonPlayer({ licao }: { licao: Licao }) {
           <>
             <div className={s.tag}>{passo.repeticao ? '🔁 Vamos de novo' : licaoTag(licao.temaId)}</div>
             <h1 className={s.titulo}>{passo.q.enunciado}</h1>
-            <div className={s.cena}><Cena spec={passo.q.cena} revelado={conferido} apitos={apitos} /></div>
+            <div className={s.cena}><Cena key={`${passo.q.id}-${i}`} spec={passo.q.cena} revelado={conferido} apitos={apitos} /></div>
             {passo.q.som && (
               <div className={s.som}>
                 <Marujo key={`apito-${apitos}`} pose="apito" altura={64} animacao={apitos > 0 ? 'treme' : 'nenhuma'} />
@@ -195,5 +209,8 @@ const TITULO_REACAO: Partial<Record<Pose, string>> = {
 };
 
 function licaoTag(temaId: string) {
-  return { luzes: '💡 Luzes de navegação', sons: '📯 Sinais sonoros', balizamento: '🛟 Balizamento IALA B' }[temaId] ?? '⚓ Questão';
+  return (
+    { luzes: '💡 Luzes de navegação', sons: '📯 Sinais sonoros', balizamento: '🛟 Balizamento IALA B', marinharia: '🪢 Nós e voltas' }[temaId] ??
+    '⚓ Questão'
+  );
 }

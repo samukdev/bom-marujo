@@ -54,6 +54,17 @@
   100% { opacity: 0; transform: translate(14px, -18px) scale(1.6); }
 }
 
+/* nós: o cabo "vai sendo passado" ao longo do caminho */
+.noBase { animation-name: noBase; animation-timing-function: linear; animation-fill-mode: both; }
+@keyframes noBase { from { stroke-dashoffset: var(--L); } to { stroke-dashoffset: 0; } }
+.noSombra { animation: noSombra 0.5s ease-out both; }
+@keyframes noSombra { from { opacity: 0; } }
+.noFaixa { animation-name: noFaixa; animation-timing-function: linear; animation-fill-mode: both; }
+@keyframes noFaixa {
+  from { stroke-dasharray: 0 var(--a) 0 var(--L); }
+  to { stroke-dasharray: 0 var(--a) var(--w) var(--L); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .svg * { animation: none !important; transition: none !important; }
   .lampejo { opacity: 1; }

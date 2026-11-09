@@ -282,7 +282,9 @@ bom-marujo/
 - [x] Protótipo de 3 cenas (luzes, boias, apito) para definir o tom
 - [ ] **Samuel traz a apostila**: mapear temas, ênfases e ilustrações → ajustar a seção 4
 - [x] Tom visual aprovado (protótipo de cenas)
-- [ ] Gerar o mascote (folha do personagem) e escolher a versão
+- [x] Mascote gerado (Grok), 13 poses recortadas e integradas (scripts/recortar-marujo.py)
+- [x] Logo: ícone do app, favicon, ícone maskable, emblema transparente, manifest PWA (scripts/gerar-icones.py)
+- [x] Módulo de nós: motor de cabos com cruzamentos por z, 6 nós animados, 2 lições e Caderno de nós (/nos)
 - [x] Setup do Next.js 16, tokens (azul), fonte Nunito
 - [ ] PWA básico (manifest + service worker)
 - [ ] Tema escuro
