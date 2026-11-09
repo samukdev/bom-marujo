@@ -149,10 +149,15 @@ export function deslocar(a: Amostra[], d: number): string {
     .join('');
 }
 
-/** Listras diagonais da trança (cabo de 3 pernas): pequenos traços inclinados ao longo do cabo. */
-export function trancado(a: Amostra[], raio: number, passo = 6.5, inclinacao = 5): string {
+/**
+ * Listras diagonais da trança (cabo de 3 pernas): pequenos traços inclinados ao longo do cabo.
+ * `a` deve ser o cabo INTEIRO; [de, ate] escolhe onde as listras começam. Assim um remendo
+ * (trecho redesenhado por cima) gera exatamente as mesmas listras do cabo embaixo — sem costura.
+ */
+export function trancado(a: Amostra[], raio: number, passo = 6.5, inclinacao = 5, de?: number, ate?: number): string {
   if (a.length < 2) return '';
-  const ini = a[0]!.s, fim = a[a.length - 1]!.s;
+  const total = a[a.length - 1]!.s;
+  const ini = Math.max(0, de ?? 0), fim = Math.min(total, ate ?? total);
   let d = '';
   let j = 0;
   const em = (s: number): [number, number, number, number] => {
@@ -162,7 +167,7 @@ export function trancado(a: Amostra[], raio: number, passo = 6.5, inclinacao = 5
     const [nx, ny] = normal(a, j);
     return [p.x + (q.x - p.x) * t, p.y + (q.y - p.y) * t, nx, ny];
   };
-  for (let s = Math.ceil(ini / passo) * passo; s + inclinacao <= fim; s += passo) {
+  for (let s = Math.ceil(ini / passo) * passo; s <= fim && s + inclinacao <= total; s += passo) {
     j = 0;
     const [x1, y1, nx1, ny1] = em(s);
     const [x2, y2, nx2, ny2] = em(s + inclinacao);
@@ -182,8 +187,27 @@ function intersecao(a: Amostra, b: Amostra, c: Amostra, d: Amostra) {
   return { t, u };
 }
 
+/**
+ * Até onde o trecho de cima precisa ir, a partir do cruzamento, para os dois cabos se separarem
+ * de verdade (em cruzamentos rasos, ±15 px não basta e o de baixo "corta" o de cima).
+ */
+function alcance(sobre: Amostra[], i0: number, sob: Amostra[], j0: number, dir: 1 | -1, folga: number): number {
+  const ini = Math.max(0, j0 - 80), fim = Math.min(sob.length - 1, j0 + 80);
+  let i = i0;
+  for (let passos = 0; passos < 60; passos++) {
+    const prox = i + dir;
+    if (prox < 0 || prox >= sobre.length) break;
+    i = prox;
+    const p = sobre[i]!;
+    let min = Infinity;
+    for (let j = ini; j <= fim; j++) min = Math.min(min, Math.hypot(sob[j]!.x - p.x, sob[j]!.y - p.y));
+    if (min > folga) break;
+  }
+  return sobre[i]!.s + dir * 3;
+}
+
 /** Cruzamentos entre trechos (do mesmo cabo ou de cabos diferentes). Retorna o trecho que fica POR CIMA. */
-export function cruzamentos(cabos: CaboGeo[], meiaLargura = 15): Trecho[] {
+export function cruzamentos(cabos: CaboGeo[], folga = 19): Trecho[] {
   const res: Trecho[] = [];
   const minDist = Math.ceil(30 / PASSO); // ignora vizinhos imediatos do mesmo cabo
   for (let i = 0; i < cabos.length; i++) {
@@ -193,13 +217,17 @@ export function cruzamentos(cabos: CaboGeo[], meiaLargura = 15): Trecho[] {
         for (let b = i === j ? a + minDist : 0; b < B.length - 1; b++) {
           const hit = intersecao(A[a]!, A[a + 1]!, B[b]!, B[b + 1]!);
           if (!hit) continue;
-          const sa = A[a]!.s + hit.t * (A[a + 1]!.s - A[a]!.s);
-          const sb = B[b]!.s + hit.u * (B[b + 1]!.s - B[b]!.s);
           const za = A[a]!.z + hit.t * (A[a + 1]!.z - A[a]!.z);
           const zb = B[b]!.z + hit.u * (B[b + 1]!.z - B[b]!.z);
-          const [cabo, s, z] = za >= zb ? [i, sa, za] : [j, sb, zb];
+          const aPorCima = za >= zb;
+          const [cabo, sobre, iS, sob, jS, z] = aPorCima ? [i, A, a, B, b, za] : [j, B, b, A, a, zb];
           const L = cabos[cabo]!.comprimento;
-          res.push({ cabo, ini: Math.max(0, s - meiaLargura), fim: Math.min(L, s + meiaLargura), z });
+          res.push({
+            cabo,
+            ini: Math.max(0, alcance(sobre, iS, sob, jS, -1, folga)),
+            fim: Math.min(L, alcance(sobre, iS + 1, sob, jS, 1, folga)),
+            z,
+          });
         }
       }
     }

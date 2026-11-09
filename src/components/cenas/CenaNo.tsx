@@ -18,9 +18,10 @@ const LARGURA = 12; // corpo do cabo
 
 /** Um pedaço de cabo desenhado: sombra, contorno, corpo, volume, trança e (opcional) falcaça nas pontas. */
 function Peca({
-  id, a, cor, pontas, sombra, animar, atraso, duracao,
+  id, a, inteiro, cor, pontas, sombra, animar, atraso, duracao,
 }: {
-  id: string; a: Amostra[]; cor: Cor; pontas: 'round' | 'butt'; sombra?: boolean;
+  /** a: o pedaço a desenhar; inteiro: o cabo todo (para a trança emendar sem costura) */
+  id: string; a: Amostra[]; inteiro?: Amostra[]; cor: Cor; pontas: 'round' | 'butt'; sombra?: boolean;
   animar: boolean; atraso: number; duracao: number;
 }) {
   if (a.length < 2) return null;
@@ -39,7 +40,10 @@ function Peca({
       <path d={d} fill="none" stroke={INK} strokeWidth={LARGURA + 4.5} strokeLinecap={pontas} strokeLinejoin="round" />
       <path d={d} fill="none" stroke={cor.corpo} strokeWidth={LARGURA} strokeLinecap={pontas} strokeLinejoin="round" />
       <path d={d} fill="none" stroke={cor.claro} strokeOpacity={0.55} strokeWidth={LARGURA * 0.38} strokeLinecap={pontas} strokeLinejoin="round" />
-      <path d={trancado(a, LARGURA / 2 - 1, 6.5, 6)} fill="none" stroke={cor.listra} strokeWidth={1.7} strokeLinecap="round" strokeOpacity={0.85} />
+      <path
+        d={trancado(inteiro ?? a, LARGURA / 2 - 2, 6.5, 6, ini - 6, fim)}
+        fill="none" stroke={cor.listra} strokeWidth={1.7} strokeLinecap="butt" strokeOpacity={0.85}
+      />
       {falcacas.map((f, i) => (
         <g key={i}>
           <path d={caminho(f)} fill="none" stroke="#F2EBDD" strokeWidth={LARGURA + 0.5} strokeLinecap="butt" />
@@ -107,7 +111,8 @@ export function CenaNo({
     const L = geos[t.cabo]!.comprimento;
     return (
       <Peca
-        key={k} id={`${prefixo}${no}-${k}`} a={recorte(geos[t.cabo]!.amostras, t.ini, t.fim)} cor={corDe(t.cabo)} pontas="butt"
+        key={k} id={`${prefixo}${no}-${k}`} a={recorte(geos[t.cabo]!.amostras, t.ini, t.fim)} inteiro={geos[t.cabo]!.amostras}
+        cor={corDe(t.cabo)} pontas="butt"
         animar={animar} atraso={(t.ini / L) * DURACAO} duracao={((t.fim - t.ini) / L) * DURACAO}
       />
     );
