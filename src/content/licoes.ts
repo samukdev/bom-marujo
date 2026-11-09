@@ -27,6 +27,7 @@ export const LICOES: Licao[] = [
           'A luz de mastro (branca) brilha para vante. As de bordo só aparecem do seu lado. A de alcançado (branca) só é vista por quem está por trás. Por isso, as luzes que você vê dizem para onde a embarcação está indo.',
         cena: { tipo: 'luzes-noite', embarcacao: { tipo: 'propulsao-mecanica' }, aspecto: 0 },
         falaMarujo: 'Vermelha e verde juntas? Ela vem na sua direção!',
+        pose: 'assustado',
       },
     ],
     questoes: [
@@ -115,6 +116,7 @@ export const LICOES: Licao[] = [
           'Apito curto dura cerca de 1 segundo. Longo, de 4 a 6 segundos. Quando duas embarcações se avistam, quem manobra avisa: 1 curto = guinando para boreste, 2 curtos = guinando para bombordo, 3 curtos = dando máquinas atrás.',
         cena: { tipo: 'encontro', sinal: 'guinando-boreste', manobra: 'nenhuma' },
         falaMarujo: 'Um, dois, três: boreste, bombordo, pra trás!',
+        pose: 'apito',
       },
     ],
     questoes: [
@@ -182,6 +184,8 @@ export const LICOES: Licao[] = [
         texto:
           'De dia, sem luz, olhe o formato: a marca de boreste é cônica, com tope em cone de ponta para cima (▲). A de bombordo é cilíndrica, com tope em cilindro (■).',
         cena: { tipo: 'canal', sentido: 'entrando' },
+        falaMarujo: 'De longe, sem cor nenhuma, é o formato que te salva.',
+        pose: 'pensando',
       },
     ],
     questoes: [

@@ -37,7 +37,35 @@ Vermelho e verde também são as cores de **bombordo e boreste** e das **boias l
 Original cartoon mascot character sheet, 1930s rubber hose animation style, vintage black-and-white era cartoon look with limited color. An old, stocky, good-humored sailor with a broad jaw and a big round nose, a thick white curled handlebar mustache, and a curved corncob pipe in the corner of his mouth with a little puff of smoke. A small anchor tattoo right under his right eye, like a teardrop tattoo. Two swallow tattoos on his chest visible through the V-neck of his sailor shirt. White sailor cap, navy blue sailor collar with white stripes, red neckerchief, thick forearms, white four-finger cartoon gloves, pie-cut eyes. Turnaround: front view, three-quarter view, side view, back view. Clean thick black ink outlines, flat colors in navy #1B2A4A, cream #F5F1E6, red #C8372D, brass yellow #E3A72F. Plain cream background, no text.
 ```
 
-## 2. Folha de expressões (estados do mascote no app)
+## 2b. Poses emocionais estilo "mascote de app" (personalidade durona) — em 3 lotes de 4
+
+Anexar a folha do personagem aprovada. Bloco fixo + lote:
+
+```
+Using the attached reference, draw the SAME original character with exactly the same face, mustache, pipe, anchor tattoo under his RIGHT eye, two swallow tattoos on his chest, scar, clothes, colors and proportions. He is a gruff, tough old sea dog who rarely smiles, so every emotion must be big, exaggerated and instantly readable even as a small app icon, like a mobile app mascot. Full body, 4 poses in a clean 2x2 grid, generous space between them, same scale. 1930s rubber hose cartoon style, thick uniform black outlines, flat colors only, pure white background, no text, no labels, no color swatches.
+```
+- **Lote A (feedback):** 1. APPROVING: thumbs up, one eye winking, small proud half-smile around the pipe · 2. PROUD: arms crossed, chest puffed out, chin up, satisfied smirk · 3. SKEPTICAL: arms crossed, one eyebrow raised high, pipe tilted down, unimpressed · 4. ANGRY: red face, steam blowing from his ears and pipe, fist raised, teeth clenched on the pipe
+- **Lote B (emoções):** 5. SAD: sitting on a small anchor, shoulders slumped, pipe drooping and unlit, one tear · 6. CELEBRATING: jumping with both fists up, cap flying off, big laughing open mouth · 7. SHOCKED: eyes popping out, mustache bristling, pipe falling from his mouth, holding his cap · 8. ASLEEP: snoozing leaning on a bollard, cap over his eyes, "Zzz" smoke from the pipe
+- **Lote C (ensino):** 9. TEACHING: pointing to the side with the pipe stem like a teacher, other hand on hip · 10. THINKING: scratching his chin, eyes looking up, pipe smoke forming a question mark · 11. SALUTING: crisp military salute, standing tall, serious face · 12. BLOWING WHISTLE: blowing a brass ship whistle, cheeks inflated, puffs of steam
+
+## 2a. Folha de poses do app (versão final — usar com a imagem da folha do personagem como referência)
+
+```
+Character pose sheet of the SAME original mascot from the reference image: an old, stocky, cheerful sailor drawn in 1930s rubber hose cartoon style — big round nose, broad jaw, thick white curled handlebar mustache, curved corncob pipe in the corner of his mouth, small anchor tattoo just below his RIGHT eye (teardrop tattoo position), two swallow tattoos on his chest visible through the V-neck, white sailor cap, white sailor shirt with navy blue sailor collar with white stripes, red neckerchief, navy bell-bottom trousers, black shoes, white four-finger cartoon gloves, pie-cut eyes, thick rubbery limbs.
+Full body, 9 poses in a clean 3x3 grid, each pose separated with generous space, same scale and same proportions in every pose:
+1. waving hello with a big grin
+2. proud thumbs up, winking (correct answer)
+3. facepalm, pipe drooping, sweat drop (wrong answer)
+4. thinking, scratching his chin, looking up
+5. jumping and celebrating, arms up, cap flying off
+6. pointing to the side like a teacher, holding the pipe in the other hand
+7. sad and sleepy, sitting on a small anchor (missing you / streak reminder)
+8. crisp military salute, standing tall
+9. blowing a ship whistle with puffs of steam, cheeks inflated
+Thick uniform black ink outlines, flat colors only (no gradients, no texture, no shading except simple cel shadow): navy #1B2A4A, royal blue #1765D8 accents, cream #F5F1E6, red #C8372D, brass yellow #E3A72F. Pure white background, no text, no labels, no frame, no extra characters.
+```
+
+## 2. Folha de expressões (versão inicial)
 
 ```
 Same original 1930s rubber hose sailor character (old sailor, white handlebar mustache, corncob pipe, anchor tattoo under right eye, swallow tattoos on chest, white sailor cap, navy sailor collar, red neckerchief). Expression sheet with 8 poses, rubber hose animation style, thick black outlines, flat vintage colors, cream background:

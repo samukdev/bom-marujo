@@ -1,6 +1,8 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
+import { Marujo } from '@/components/marujo/Marujo';
 import { LICOES, TEMAS } from '@/content/licoes';
 import { useProgresso } from '@/lib/progresso';
 import s from './trilha.module.css';
@@ -16,10 +18,28 @@ export function Trilha() {
     <div className={s.app}>
       <header className={s.header}>
         <div className={s.logo}>
-          <span className={s.ancora} aria-hidden>⚓</span> Bom Marujo
+          <span className={s.avatar} aria-hidden>
+            <Image src="/marujo/neutro.webp" alt="" width={420} height={640} priority />
+          </span>
+          Bom Marujo
         </div>
         <div className={s.xp} title="Experiência">⭐ {xp} XP</div>
       </header>
+
+      <div className={s.boasVindas}>
+        <Marujo pose={xp === 0 ? 'continencia' : 'orgulhoso'} altura={150} prioridade />
+        <div className={s.balao}>
+          {xp === 0 ? (
+            <>
+              <b>Bem-vindo a bordo, marujo!</b> Sou eu quem vai te preparar pra prova da Marinha. Começa pela primeira lição aí embaixo.
+            </>
+          ) : (
+            <>
+              <b>{xp} XP. Nada mal.</b> Mas prova não se passa com meia dúzia de lições. Bora pra próxima!
+            </>
+          )}
+        </div>
+      </div>
 
       {TEMAS.map((tema) => (
         <section key={tema.id} className={s.unidade}>

@@ -1,0 +1,26 @@
+.marujo { display: inline-block; flex: none; transform-origin: 50% 100%; }
+.marujo img { width: 100%; height: 100%; object-fit: contain; display: block; user-select: none; }
+
+.pula { animation: pula 0.6s cubic-bezier(0.3, 1.6, 0.5, 1) both; }
+@keyframes pula {
+  0% { transform: translateY(20px) scale(0.6, 0.6); opacity: 0; }
+  60% { transform: translateY(-6px) scale(1.05, 0.95); opacity: 1; }
+  100% { transform: none; }
+}
+
+.treme { animation: entra 0.25s ease-out both, treme 0.35s 0.25s linear 2; }
+@keyframes entra { from { transform: scale(0.7); opacity: 0; } }
+@keyframes treme {
+  25% { transform: translateX(-3px) rotate(-2deg); }
+  75% { transform: translateX(3px) rotate(2deg); }
+}
+
+.balanca { animation: entra 0.3s ease-out both, balanca 3s 0.3s ease-in-out infinite; }
+@keyframes balanca {
+  0%, 100% { transform: rotate(-1.5deg); }
+  50% { transform: rotate(1.5deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marujo { animation: none !important; }
+}

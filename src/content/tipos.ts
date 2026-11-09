@@ -1,6 +1,7 @@
 import type { EmbarcacaoSpec } from '@/lib/ripeam/luzes';
 import type { SinalId } from '@/lib/ripeam/sinais';
 import type { Sentido } from '@/lib/iala/boias';
+import type { Pose } from '@/components/marujo/Marujo';
 
 /** Especificação declarativa de uma cena — o motor desenha a partir disto. */
 export type CenaSpec =
@@ -39,6 +40,8 @@ export interface CartaoConceito {
   texto: string;
   cena?: CenaSpec;
   falaMarujo?: string;
+  /** pose do Marujo no cartão (padrão: ensinando) */
+  pose?: Pose;
 }
 
 export interface Licao {

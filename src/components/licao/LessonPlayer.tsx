@@ -7,6 +7,7 @@ import { Cena } from '@/components/cenas/Cena';
 import { SINAIS } from '@/lib/ripeam/sinais';
 import { bip, tocarSinal } from '@/lib/audio/apito';
 import { concluirLicao } from '@/lib/progresso';
+import { Marujo, type Pose } from '@/components/marujo/Marujo';
 import s from './licao.module.css';
 
 type Passo = { tipo: 'conceito'; c: CartaoConceito } | { tipo: 'questao'; q: Questao; repeticao?: boolean };
@@ -26,6 +27,8 @@ export function LessonPlayer({ licao }: { licao: Licao }) {
   const [acertos, setAcertos] = useState(0);
   const [apitos, setApitos] = useState(0);
   const [fim, setFim] = useState<{ xp: number } | null>(null);
+  const [sequencia, setSequencia] = useState(0);
+  const [reacao, setReacao] = useState<Pose>('aprovando');
 
   const passo = fila[i];
   const totalBase = inicial.length;
@@ -49,6 +52,10 @@ export function LessonPlayer({ licao }: { licao: Licao }) {
     const certo = escolha === passo.q.correta;
     bip(certo);
     setConferido(true);
+    // Reação do Marujo: durão — joinha no acerto, orgulho em sequência, desconfiança no erro, bravo se errar de novo.
+    const seq = certo ? sequencia + 1 : 0;
+    setSequencia(seq);
+    setReacao(certo ? (seq >= 3 ? 'orgulhoso' : 'aprovando') : passo.repeticao ? 'bravo' : 'cetico');
     if (certo && !passo.repeticao) setAcertos((a) => a + 1);
     // Erros voltam no fim da lição (uma vez).
     if (!certo && !passo.repeticao) setFila((f) => [...f, { tipo: 'questao', q: passo.q, repeticao: true }]);
@@ -76,12 +83,22 @@ export function LessonPlayer({ licao }: { licao: Licao }) {
 
   if (fim) {
     const qs = licao.questoes.length;
+    const pct = acertos / qs;
+    const [poseFim, frase] =
+      pct === 1
+        ? (['comemorando', 'Lição perfeita! Até o velho aqui sorriu.'] as const)
+        : pct >= 0.7
+          ? (['orgulhoso', 'Nada mal, marujo. Nada mal.'] as const)
+          : pct >= 0.5
+            ? (['aprovando', 'Passou raspando. Revisa esses erros aí.'] as const)
+            : (['triste', 'Mar agitado hoje... bora tentar de novo?'] as const);
     return (
       <div className={s.app}>
         <div className={s.fim}>
-          <div className={s.marujoGrande} aria-hidden>⚓</div>
+          <Marujo pose={poseFim} altura={220} prioridade />
           <h1>Lição concluída!</h1>
           <p className={s.sub}>{licao.titulo}</p>
+          <p className={s.frase}>“{frase}”</p>
           <div className={s.stats}>
             <div className={s.stat}><span>XP</span><b>+{fim.xp}</b></div>
             <div className={s.stat}><span>Precisão</span><b>{Math.round((acertos / qs) * 100)}%</b></div>
@@ -109,7 +126,7 @@ export function LessonPlayer({ licao }: { licao: Licao }) {
             <p className={s.texto}>{passo.c.texto}</p>
             {passo.c.falaMarujo && (
               <div className={s.marujo}>
-                <div className={s.avatar} aria-hidden>⚓</div>
+                <Marujo key={passo.c.id} pose={passo.c.pose ?? 'ensinando'} altura={130} />
                 <div className={s.balao}>{passo.c.falaMarujo}</div>
               </div>
             )}
@@ -121,6 +138,7 @@ export function LessonPlayer({ licao }: { licao: Licao }) {
             <div className={s.cena}><Cena spec={passo.q.cena} revelado={conferido} apitos={apitos} /></div>
             {passo.q.som && (
               <div className={s.som}>
+                <Marujo key={`apito-${apitos}`} pose="apito" altura={64} animacao={apitos > 0 ? 'treme' : 'nenhuma'} />
                 <button className={s.btnSom} onClick={() => ouvir()}>🔊 Ouvir sinal</button>
                 <button className={`${s.btnSom} ${s.lento}`} onClick={() => ouvir(true)} aria-label="Ouvir devagar">🐢</button>
               </div>
@@ -147,9 +165,10 @@ export function LessonPlayer({ licao }: { licao: Licao }) {
         <div className={s.rodapeIn}>
           {conferido && passo.tipo === 'questao' && (
             <div className={s.fb} role="status" aria-live="polite">
+              <Marujo key={`r-${i}`} pose={reacao} altura={96} className={s.reacao} />
               <div className={s.ic}>{ok ? '✓' : '✕'}</div>
               <div>
-                <b>{ok ? 'Mandou bem, marujo!' : 'Quase! Resposta certa:'}</b>
+                <b>{TITULO_REACAO[reacao] ?? (ok ? 'Mandou bem, marujo!' : 'Resposta certa:')}</b>
                 <p>{(ok ? '' : passo.q.opcoes[passo.q.correta] + '. ') + passo.q.explicacao}</p>
                 <span className={s.regra}>{passo.q.referencia}</span>
               </div>
@@ -167,6 +186,13 @@ export function LessonPlayer({ licao }: { licao: Licao }) {
     </>
   );
 }
+
+const TITULO_REACAO: Partial<Record<Pose, string>> = {
+  aprovando: 'Mandou bem, marujo!',
+  orgulhoso: 'É isso aí! Tá virando lobo do mar.',
+  cetico: 'Hmm... não foi dessa vez.',
+  bravo: 'De novo, marujo?! Presta atenção!',
+};
 
 function licaoTag(temaId: string) {
   return { luzes: '💡 Luzes de navegação', sons: '📯 Sinais sonoros', balizamento: '🛟 Balizamento IALA B' }[temaId] ?? '⚓ Questão';
