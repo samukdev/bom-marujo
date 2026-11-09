@@ -1,4 +1,5 @@
 'use client';
+import { asset } from '@/lib/base';
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -19,7 +20,7 @@ export function Trilha() {
       <header className={s.header}>
         <div className={s.logo}>
           <span className={s.avatar} aria-hidden>
-            <Image src="/brand/icone-192.png" alt="" width={192} height={192} priority />
+            <Image src={asset('/brand/icone-192.png')} alt="" width={192} height={192} priority />
           </span>
           Bom Marujo
         </div>

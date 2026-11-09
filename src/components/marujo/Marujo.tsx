@@ -1,3 +1,4 @@
+import { asset } from '@/lib/base';
 import Image from 'next/image';
 import s from './marujo.module.css';
 
@@ -69,7 +70,7 @@ export function Marujo({
   const anim = animacao ?? ANIM[pose] ?? 'nenhuma';
   return (
     <span className={`${s.marujo} ${s[anim] ?? ''} ${className ?? ''}`} style={{ height: altura, width: (altura * w) / h }}>
-      <Image src={`/marujo/${pose}.webp`} alt={ALT[pose]} width={w} height={h} priority={prioridade} draggable={false} />
+      <Image src={asset(`/marujo/${pose}.webp`)} alt={ALT[pose]} width={w} height={h} priority={prioridade} draggable={false} />
     </span>
   );
 }

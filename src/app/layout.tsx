@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Nunito } from 'next/font/google';
 import './globals.css';
+import { asset } from '@/lib/base';
 
 const nunito = Nunito({
   variable: '--fonte',
@@ -11,6 +12,7 @@ const nunito = Nunito({
 export const metadata: Metadata = {
   title: 'Bom Marujo',
   description: 'Estude para Arrais-Amador e Motonauta com lições curtas, cenas animadas e sinais sonoros.',
+  manifest: asset('/manifest.webmanifest'),
 };
 
 export const viewport: Viewport = {
