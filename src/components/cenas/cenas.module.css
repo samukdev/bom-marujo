@@ -1,0 +1,60 @@
+.svg { display: block; width: 100%; height: auto; }
+
+.onda { animation: onda var(--d, 6s) linear infinite; }
+@keyframes onda { to { transform: translateX(var(--w, -80px)); } }
+
+.balanca { animation: balanca 3.2s ease-in-out infinite; transform-origin: 0 0; }
+@keyframes balanca {
+  0%, 100% { transform: translateY(0) rotate(-1.2deg); }
+  50% { transform: translateY(3px) rotate(1.2deg); }
+}
+
+.halo { animation: halo 2.4s ease-in-out infinite; }
+@keyframes halo { 50% { opacity: 0.55; } }
+
+.reflexo { animation: reflexo 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: top; }
+@keyframes reflexo { 50% { opacity: 0.2; transform: scaleX(0.6); } }
+
+.estrela { animation: pisca 3s ease-in-out infinite; }
+@keyframes pisca { 50% { opacity: 0.2; } }
+
+.lampejo { animation: lampejo 3s steps(1) infinite; opacity: 0; }
+@keyframes lampejo { 0% { opacity: 1; } 12% { opacity: 0; } }
+
+.boia { animation: boia 2.8s ease-in-out infinite; }
+@keyframes boia {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(2px) rotate(3deg); }
+}
+
+.avanco { animation: avanco 3.6s linear infinite; transform-origin: 200px 104px; opacity: 0; }
+@keyframes avanco {
+  0% { transform: scale(0.15); opacity: 0; }
+  20% { opacity: 0.8; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.nuvem { animation: nuvem 40s linear infinite; }
+@keyframes nuvem { from { transform: translateX(-80px); } to { transform: translateX(480px); } }
+
+.esteira { stroke-dasharray: 6 8; animation: esteira 0.6s linear infinite; }
+@keyframes esteira { to { stroke-dashoffset: -14; } }
+
+.revelar { opacity: 0; transition: opacity 0.5s 0.2s; }
+.revelado .revelar { opacity: 1; }
+
+.guina { transition: transform 2.4s cubic-bezier(0.45, 0, 0.3, 1); }
+
+.fumaca circle { opacity: 0; transform-box: fill-box; transform-origin: center; animation: fumaca 1s ease-out forwards; }
+.fumaca circle:nth-child(2) { animation-delay: 0.15s; }
+.fumaca circle:nth-child(3) { animation-delay: 0.3s; }
+.fumacaParada circle { opacity: 0; }
+@keyframes fumaca {
+  0% { opacity: 0.95; transform: translate(0, 0) scale(0.4); }
+  100% { opacity: 0; transform: translate(14px, -18px) scale(1.6); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .svg * { animation: none !important; transition: none !important; }
+  .lampejo { opacity: 1; }
+}

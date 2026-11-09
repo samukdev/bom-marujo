@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bom Marujo — Cenas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --azul:#1765D8;        /* primária */
+    --azul-escuro:#0E4BA8; /* sombra dos botões */
+    --azul-claro:#E6F0FD;
+    --tinta:#0B1F3F;       /* traço / texto */
+    --texto-2:#4A5B78;
+    --fundo:#F4F7FB;
+    --card:#FFFFFF;
+    --borda:#DCE4EF;
+    --creme:#F5F1E6;
+    --ok:#1E9E6A; --ok-bg:#DDF5EA;
+    --erro:#D2463A; --erro-bg:#FCE3E0;
+    /* cores NÁUTICAS (conteúdo, não UI) */
+    --luz-bb:#FF3B30;   /* bombordo — vermelho */
+    --luz-be:#22E07A;   /* boreste — verde */
+    --boia-verm:#D4342B;
+    --boia-verde:#1F8A4C;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--fundo);color:var(--tinta);font-family:Nunito,system-ui,sans-serif;font-weight:600}
+  .app{max-width:600px;margin:0 auto;padding:16px 16px 140px}
+  .topo{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .fechar{border:0;background:none;font-size:22px;color:var(--texto-2);cursor:pointer}
+  .progresso{flex:1;height:16px;background:var(--borda);border-radius:99px;overflow:hidden}
+  .progresso>i{display:block;height:100%;width:0;background:var(--azul);border-radius:99px;transition:width .4s cubic-bezier(.3,1.4,.6,1);box-shadow:inset 0 -4px 0 rgba(0,0,0,.12)}
+  .abas{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+  .abas button{font:inherit;font-size:13px;border:2px solid var(--borda);background:var(--card);color:var(--texto-2);padding:6px 12px;border-radius:99px;cursor:pointer}
+  .abas button.ativa{border-color:var(--azul);color:var(--azul);background:var(--azul-claro)}
+  .tag{display:inline-flex;gap:6px;align-items:center;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--azul)}
+  h1{font-size:22px;font-weight:900;margin:6px 0 14px;line-height:1.25}
+  .cena{position:relative;border:3px solid var(--tinta);border-radius:20px;overflow:hidden;background:#000;box-shadow:0 6px 0 var(--tinta);margin-bottom:18px}
+  .cena svg{display:block;width:100%;height:auto}
+  .som{display:flex;gap:10px;margin:-4px 0 18px}
+  .btn-som{display:flex;align-items:center;gap:10px;font:inherit;font-weight:900;font-size:16px;border:0;border-radius:16px;padding:14px 20px;background:var(--azul);color:#fff;cursor:pointer;box-shadow:0 5px 0 var(--azul-escuro)}
+  .btn-som.lento{background:var(--card);color:var(--azul);border:2px solid var(--borda);box-shadow:0 4px 0 var(--borda)}
+  .btn-som:active{transform:translateY(4px);box-shadow:none}
+  .opcoes{display:grid;gap:10px}
+  .op{display:flex;align-items:center;gap:12px;text-align:left;font:inherit;font-size:16px;color:var(--tinta);background:var(--card);border:2px solid var(--borda);border-radius:16px;padding:14px;cursor:pointer;box-shadow:0 4px 0 var(--borda);transition:transform .08s}
+  .op:active{transform:translateY(3px);box-shadow:0 1px 0 var(--borda)}
+  .op .k{flex:none;width:30px;height:30px;border-radius:9px;border:2px solid var(--borda);display:grid;place-items:center;font-size:13px;color:var(--texto-2)}
+  .op.sel{border-color:var(--azul);background:var(--azul-claro);box-shadow:0 4px 0 var(--azul)}
+  .op.sel .k{border-color:var(--azul);color:var(--azul)}
+  .op.certa{border-color:var(--ok);background:var(--ok-bg);box-shadow:0 4px 0 var(--ok)}
+  .op.errada{border-color:var(--erro);background:var(--erro-bg);box-shadow:0 4px 0 var(--erro)}
+  .op:disabled{cursor:default}
+  /* rodapé */
+  .rodape{position:fixed;left:0;right:0;bottom:0;border-top:2px solid var(--borda);background:var(--card);transition:background .2s}
+  .rodape .in{max-width:600px;margin:0 auto;padding:16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .rodape.ok{background:var(--ok-bg);border-color:transparent}
+  .rodape.erro{background:var(--erro-bg);border-color:transparent}
+  .fb{flex:1 1 300px;display:none;gap:12px;align-items:flex-start}
+  .rodape.ok .fb,.rodape.erro .fb{display:flex;animation:sobe .25s ease-out}
+  .fb .ic{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:24px;font-weight:900;color:#fff}
+  .rodape.ok .ic{background:var(--ok)} .rodape.erro .ic{background:var(--erro)}
+  .fb b{display:block;font-size:19px;font-weight:900}
+  .rodape.ok .fb b{color:#137049} .rodape.erro .fb b{color:#A42D23}
+  .fb p{margin:4px 0 0;font-size:14px;line-height:1.4;color:var(--tinta)}
+  .fb .regra{display:inline-block;margin-top:6px;font-size:12px;font-weight:800;padding:2px 8px;border-radius:6px;background:rgba(255,255,255,.7)}
+  .principal{margin-left:auto;font:inherit;font-weight:900;font-size:16px;letter-spacing:.04em;text-transform:uppercase;border:0;border-radius:16px;padding:14px 28px;min-width:170px;background:var(--azul);color:#fff;cursor:pointer;box-shadow:0 5px 0 var(--azul-escuro)}
+  .principal:disabled{background:var(--borda);color:#9AA8BE;box-shadow:0 5px 0 #C9D3E1;cursor:default}
+  .rodape.ok .principal{background:var(--ok);box-shadow:0 5px 0 #137049}
+  .rodape.erro .principal{background:var(--erro);box-shadow:0 5px 0 #A42D23}
+  @keyframes sobe{from{transform:translateY(12px);opacity:0}}
+  @media (max-width:520px){h1{font-size:19px}.principal{width:100%}}
+
+  /* ---------- animações das cenas ---------- */
+  .onda{animation:onda var(--d,6s) linear infinite}
+  @keyframes onda{to{transform:translateX(var(--w,-80px))}}
+  .balanca{animation:balanca 3.2s ease-in-out infinite}
+  @keyframes balanca{0%,100%{transform:translateY(0) rotate(-1.2deg)}50%{transform:translateY(3px) rotate(1.2deg)}}
+  .aprox{animation:aprox 9s ease-in-out infinite alternate;transform-origin:0 0}
+  @keyframes aprox{from{transform:scale(.55)}to{transform:scale(1)}}
+  .halo{animation:halo 2.4s ease-in-out infinite}
+  @keyframes halo{50%{opacity:.55}}
+  .reflexo{animation:reflexo 1.6s ease-in-out infinite}
+  @keyframes reflexo{50%{opacity:.25;transform:scaleX(.7)}}
+  .estrela{animation:pisca 3s ease-in-out infinite}
+  @keyframes pisca{50%{opacity:.2}}
+  .lampejo{animation:lampejo 3s steps(1) infinite;opacity:0}
+  @keyframes lampejo{0%{opacity:1}12%{opacity:0}}
+  .boia{animation:boia 2.8s ease-in-out infinite}
+  @keyframes boia{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(2px) rotate(3deg)}}
+  .avanco{animation:avanco 3.6s linear infinite;transform-origin:200px 104px;opacity:0}
+  @keyframes avanco{0%{transform:scale(.15);opacity:0}20%{opacity:.8}100%{transform:scale(2.2);opacity:0}}
+  .nuvem{animation:nuvem 40s linear infinite}
+  @keyframes nuvem{from{transform:translateX(-80px)}to{transform:translateX(480px)}}
+  .esteira{stroke-dasharray:6 8;animation:esteira .6s linear infinite}
+  @keyframes esteira{to{stroke-dashoffset:-14}}
+  .revelar{opacity:0;transition:opacity .5s .2s}
+  .revelado .revelar{opacity:1}
+  .guina{transition:transform 2.4s cubic-bezier(.45,0,.3,1)}
+  .fumaca circle{opacity:0}
+  .soprando .fumaca circle{animation:fumaca 1s ease-out forwards}
+  .soprando .fumaca circle:nth-child(2){animation-delay:.15s}
+  .soprando .fumaca circle:nth-child(3){animation-delay:.3s}
+  @keyframes fumaca{0%{opacity:.95;transform:translate(0,0) scale(.4)}100%{opacity:0;transform:translate(14px,-18px) scale(1.6)}}
+  .fumaca circle{transform-box:fill-box;transform-origin:center}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.lampejo{opacity:1}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topo">
+    <button class="fechar" aria-label="Sair">✕</button>
+    <div class="progresso"><i id="barra"></i></div>
+  </div>
+  <div class="abas" id="abas"></div>
+  <div id="licao"></div>
+</div>
+<div class="rodape" id="rodape">
+  <div class="in">
+    <div class="fb" role="status" aria-live="polite">
+      <div class="ic" id="fbIc"></div>
+      <div><b id="fbTit"></b><p id="fbTxt"></p><span class="regra" id="fbRegra"></span></div>
+    </div>
+    <button class="principal" id="btn" disabled>Verificar</button>
+  </div>
+</div>
+
+<script>
+/* ===================== helpers SVG ===================== */
+const INK = '#0B1F3F';
+function ondas(y, amp, comp, cor, op = 1, dur = 6, sentido = -1, traco = '') {
+  let d = `M-${comp*2},${y}`;
+  for (let x = -comp*2; x < 400 + comp*2; x += comp) {
+    d += ` q${comp/4},${-amp} ${comp/2},0 t${comp/2},0`;
+  }
+  d += ` V300 H-${comp*2} Z`;
+  return `<path class="onda" style="--d:${dur}s;--w:${sentido*comp}px" d="${d}" fill="${cor}" opacity="${op}" ${traco}/>`;
+}
+function luz(x, y, cor, r = 5, nome = '') {
+  return `<g ${nome}>
+    <circle class="halo" cx="${x}" cy="${y}" r="${r*3.6}" fill="${cor}" opacity=".35" filter="url(#blur)"/>
+    <circle cx="${x}" cy="${y}" r="${r}" fill="${cor}"/>
+    <circle cx="${x - r*.3}" cy="${y - r*.3}" r="${r*.35}" fill="#fff" opacity=".9"/>
+  </g>`;
+}
+const defs = `<defs>
+  <filter id="blur" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="4"/></filter>
+  <filter id="blurG" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="2"/></filter>
+</defs>`;
+function rotulo(x, y, txt, cor, anc = 'middle') {
+  return `<text x="${x}" y="${y}" text-anchor="${anc}" font-family="Nunito" font-weight="900" font-size="11" fill="#fff" stroke="${INK}" stroke-width="3.5" paint-order="stroke" letter-spacing=".5">${txt}</text>
+          <text x="${x}" y="${y}" text-anchor="${anc}" font-family="Nunito" font-weight="900" font-size="11" fill="${cor}" letter-spacing=".5">${txt}</text>`;
+}
+
+/* ===================== CENA 1 — luzes de navegação à noite ===================== */
+function cenaLuzes() {
+  let estrelas = '';
+  for (let i = 0; i < 28; i++) {
+    const x = (i * 137) % 400, y = (i * 53) % 120 + 6, r = (i % 3) * .5 + .6;
+    estrelas += `<circle class="estrela" style="animation-delay:${(i%7)*.4}s" cx="${x}" cy="${y}" r="${r}" fill="#fff" opacity=".8"/>`;
+  }
+  // Embarcação de propulsão mecânica < 50 m vista DE PROA (vindo na nossa direção).
+  // Seu boreste (verde) aparece à NOSSA ESQUERDA; seu bombordo (vermelho) à NOSSA DIREITA.
+  const barco = `
+    <g class="balanca" style="transform-origin:0 0">
+      <rect x="-2" y="-92" width="4" height="62" fill="#22385F" stroke="#3A5A8F" stroke-width="1"/>
+      <rect x="-30" y="-36" width="60" height="30" rx="7" fill="#1B2D4F" stroke="#3A5A8F" stroke-width="2"/>
+      <path d="M-24,-30 h48 l-4,12 h-40z" fill="#0E1A30" stroke="#3A5A8F" stroke-width="1.5"/>
+      <path d="M-20,-28 l8,0 l-10,8z" fill="#5B7FB8" opacity=".5"/>
+      <path d="M-60,-6 Q0,4 60,-6 L24,30 Q0,38 -24,30Z" fill="#16264A" stroke="#3A5A8F" stroke-width="2.5"/>
+      <path d="M0,-2 L0,32" stroke="#3A5A8F" stroke-width="2"/>
+      ${luz(0, -95, '#FFFFFF', 5)}
+      ${luz(-44, -10, 'var(--luz-be)', 5)}
+      ${luz(44, -10, 'var(--luz-bb)', 5)}
+      <g class="revelar">
+        <line x1="0" y1="-95" x2="62" y2="-118" stroke="#fff" stroke-width="1.2"/>
+        ${rotulo(64, -116, 'MASTRO (branca)', '#fff', 'start')}
+        <line x1="-44" y1="-10" x2="-92" y2="-46" stroke="#fff" stroke-width="1.2"/>
+        ${rotulo(-94, -50, 'BORESTE dela', 'var(--luz-be)', 'end')}
+        <line x1="44" y1="-10" x2="92" y2="-46" stroke="#fff" stroke-width="1.2"/>
+        ${rotulo(94, -50, 'BOMBORDO dela', 'var(--luz-bb)', 'start')}
+      </g>
+    </g>`;
+  const reflexos = `
+    <rect class="reflexo" x="-48" y="34" width="8" height="40" rx="4" fill="var(--luz-be)" opacity=".5" filter="url(#blurG)" style="transform-origin:-44px 34px"/>
+    <rect class="reflexo" x="40" y="34" width="8" height="40" rx="4" fill="var(--luz-bb)" opacity=".5" filter="url(#blurG)" style="transform-origin:44px 34px;animation-delay:.4s"/>
+    <rect class="reflexo" x="-4" y="38" width="8" height="54" rx="4" fill="#fff" opacity=".4" filter="url(#blurG)" style="transform-origin:0 38px;animation-delay:.8s"/>`;
+  return `<svg viewBox="0 0 400 260" role="img" aria-label="Cena noturna: embarcação vindo de frente mostrando luzes">
+    ${defs}
+    <linearGradient id="ceu" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#050D1F"/><stop offset="1" stop-color="#14305E"/></linearGradient>
+    <linearGradient id="marN" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0C2348"/><stop offset="1" stop-color="#06122A"/></linearGradient>
+    <rect width="400" height="260" fill="url(#ceu)"/>
+    ${estrelas}
+    <circle cx="335" cy="38" r="16" fill="#F5F1E6"/><circle cx="342" cy="33" r="15" fill="#0A1730"/>
+    <rect y="148" width="400" height="112" fill="url(#marN)"/>
+    ${ondas(150, 3, 60, '#0F2B57', 1, 9)}
+    <g transform="translate(200,170)"><g class="aprox">${reflexos}${barco}</g></g>
+    ${ondas(206, 5, 70, '#0A1F42', .95, 7, 1)}
+    ${ondas(232, 6, 90, '#071733', 1, 6)}
+    <text x="16" y="248" font-family="Nunito" font-weight="800" font-size="10" fill="#7F9CCB">NOITE • VISIBILIDADE BOA</text>
+  </svg>`;
+}
+
+/* ===================== CENA 2 — balizamento IALA B entrando no porto ===================== */
+function boiaBoreste(x, y, s, atraso) { // IALA B: vermelha, cônica, tope cone ▲, luz vermelha
+  return `<g transform="translate(${x},${y}) scale(${s})"><g class="boia" style="animation-delay:${atraso}s">
+    <ellipse cx="0" cy="2" rx="22" ry="5" fill="#fff" opacity=".55"/>
+    <path d="M-17,0 L17,0 L6,-38 L-6,-38Z" fill="var(--boia-verm)" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M-12,-6 L-4,-34" stroke="#fff" stroke-width="3" opacity=".35" stroke-linecap="round"/>
+    <rect x="-2.5" y="-60" width="5" height="22" fill="${INK}"/>
+    <rect x="-5" y="-52" width="10" height="8" rx="2" fill="#FFD9D6" stroke="${INK}" stroke-width="2"/>
+    <circle class="lampejo" style="animation-delay:${atraso}s" cx="0" cy="-48" r="14" fill="#FF3B30" opacity=".8" filter="url(#blur)"/>
+    <path d="M-9,-60 L9,-60 L0,-76Z" fill="var(--boia-verm)" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>
+  </g></g>`;
+}
+function boiaBombordo(x, y, s, atraso) { // IALA B: verde, cilíndrica (lata), tope cilindro ■, luz verde
+  return `<g transform="translate(${x},${y}) scale(${s})"><g class="boia" style="animation-delay:${atraso}s">
+    <ellipse cx="0" cy="2" rx="22" ry="5" fill="#fff" opacity=".55"/>
+    <rect x="-14" y="-36" width="28" height="36" rx="2" fill="var(--boia-verde)" stroke="${INK}" stroke-width="3"/>
+    <path d="M-9,-31 L-9,-5" stroke="#fff" stroke-width="3" opacity=".35" stroke-linecap="round"/>
+    <rect x="-2.5" y="-58" width="5" height="22" fill="${INK}"/>
+    <rect x="-5" y="-52" width="10" height="8" rx="2" fill="#D6FFE6" stroke="${INK}" stroke-width="2"/>
+    <circle class="lampejo" style="animation-delay:${atraso}s" cx="0" cy="-48" r="14" fill="#22E07A" opacity=".8" filter="url(#blur)"/>
+    <rect x="-7.5" y="-72" width="15" height="14" rx="1.5" fill="var(--boia-verde)" stroke="${INK}" stroke-width="2.5"/>
+  </g></g>`;
+}
+function cenaBoias() {
+  let tracos = '';
+  for (let i = 0; i < 4; i++) {
+    tracos += `<g class="avanco" style="animation-delay:${i*0.9}s" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".7">
+      <line x1="150" y1="122" x2="166" y2="122"/><line x1="236" y1="128" x2="254" y2="128"/>
+      <line x1="120" y1="140" x2="132" y2="140"/><line x1="268" y1="146" x2="282" y2="146"/></g>`;
+  }
+  return `<svg viewBox="0 0 400 260" role="img" aria-label="Entrando no porto por um canal balizado com boias">
+    ${defs}
+    <linearGradient id="ceuD" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7EC3F5"/><stop offset="1" stop-color="#D8EEFC"/></linearGradient>
+    <linearGradient id="marD" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2F86D6"/><stop offset="1" stop-color="#1557A8"/></linearGradient>
+    <rect width="400" height="260" fill="url(#ceuD)"/>
+    <circle cx="60" cy="34" r="16" fill="#FFE07A" stroke="${INK}" stroke-width="2.5"/>
+    <g class="nuvem"><path d="M0,40 q6,-14 20,-8 q8,-12 22,-2 q14,-2 12,10 z" fill="#fff" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/></g>
+    <g class="nuvem" style="animation-delay:-22s"><path d="M0,62 q5,-10 16,-6 q7,-9 17,-1 q11,-1 9,7 z" fill="#fff" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/></g>
+    <!-- porto no horizonte -->
+    <path d="M110,104 v-10 h14 v-8 h12 v18 M240,104 v-14 h10 v-6 h14 v20 h18 v-10 h12 v10" fill="#B9C9DD" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/>
+    <g transform="translate(296,104)"><path d="M-5,0 L-3,-30 L3,-30 L5,0Z" fill="#fff" stroke="${INK}" stroke-width="2"/><rect x="-3.5" y="-22" width="7" height="5" fill="var(--boia-verm)"/><rect x="-4" y="-36" width="8" height="6" fill="#FFE07A" stroke="${INK}" stroke-width="2"/></g>
+    <rect y="103" width="400" height="157" fill="url(#marD)"/>
+    <line x1="0" y1="104" x2="400" y2="104" stroke="${INK}" stroke-width="2.5"/>
+    ${tracos}
+    <!-- canal: verdes à ESQUERDA (bombordo de quem entra), vermelhas à DIREITA (boreste de quem entra) -->
+    ${boiaBombordo(172, 112, .3, 0.2)}${boiaBoreste(228, 112, .3, 1.1)}
+    ${boiaBombordo(140, 134, .55, 1.6)}${boiaBoreste(260, 134, .55, 0.7)}
+    ${boiaBombordo(70, 178, 1, 0.9)}${boiaBoreste(330, 178, 1, 2.0)}
+    <g class="revelar">
+      <path d="M200,232 C200,190 200,150 200,112" stroke="#fff" stroke-width="3" stroke-dasharray="7 7" fill="none"/>
+      <path d="M193,120 L200,108 L207,120" stroke="#fff" stroke-width="3" fill="none" stroke-linejoin="round"/>
+      ${rotulo(330, 98+110, 'BORESTE ▸ vermelha', '#FFD3CF')}
+      ${rotulo(70, 98+110, '◂ BOMBORDO verde', '#C9FFDF')}
+    </g>
+    <!-- nossa lancha, vista por trás (popa) -->
+    <g transform="translate(200,234)"><g class="balanca">
+      <path class="esteira" d="M-14,14 L-60,40 M14,14 L60,40 M0,16 L0,40" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+      <rect x="-18" y="-30" width="36" height="20" rx="5" fill="#fff" stroke="${INK}" stroke-width="3"/>
+      <rect x="-13" y="-26" width="26" height="9" rx="3" fill="#9CCBF2" stroke="${INK}" stroke-width="2"/>
+      <path d="M-36,-12 L36,-12 L28,12 L-28,12Z" fill="#fff" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M-33,-3 L33,-3" stroke="var(--azul)" stroke-width="5"/>
+      <rect x="-6" y="4" width="12" height="16" rx="3" fill="#2B2F38" stroke="${INK}" stroke-width="2"/>
+      <rect x="-1" y="-6" width="2" height="12" fill="#fff"/>
+    </g></g>
+    ${ondas(252, 3, 50, '#124C96', .9, 4)}
+  </svg>`;
+}
+
+/* ===================== CENA 3 — sinal sonoro (vista de cima) ===================== */
+function cenaApito() {
+  // casco desenhado apontando para CIMA no sistema local: bombordo = esquerda (vermelho), boreste = direita (verde)
+  const navio = `
+    <path d="M0,-62 C15,-44 20,-22 20,0 L20,46 Q20,56 10,58 L-10,58 Q-20,56 -20,46 L-20,0 C-20,-22 -15,-44 0,-62Z" fill="#E9EEF5" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M-15,-6 L15,-6" stroke="${INK}" stroke-width="2" opacity=".3"/>
+    <rect x="-16" y="4" width="32" height="10" rx="3" fill="var(--azul)" stroke="${INK}" stroke-width="2.5"/>
+    <rect x="-12" y="14" width="24" height="26" rx="4" fill="var(--creme)" stroke="${INK}" stroke-width="2.5"/>
+    <circle cx="0" cy="30" r="6.5" fill="#C8372D" stroke="${INK}" stroke-width="2.5"/><circle cx="0" cy="30" r="2.5" fill="${INK}"/>
+    <g class="fumaca"><circle cx="0" cy="30" r="7" fill="#fff" stroke="${INK}" stroke-width="2"/><circle cx="4" cy="26" r="6" fill="#fff" stroke="${INK}" stroke-width="2"/><circle cx="8" cy="22" r="5" fill="#fff" stroke="${INK}" stroke-width="2"/></g>
+    ${luz(0, -22, '#FFFFFF', 3)}
+    ${luz(-21, -8, 'var(--luz-bb)', 3.4)}
+    ${luz(21, -8, 'var(--luz-be)', 3.4)}`;
+  const lancha = `
+    <path class="esteira" d="M-6,26 L-14,62 M6,26 L14,62" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+    <path d="M0,-28 C9,-17 12,-6 12,4 L12,20 Q12,26 6,26 L-6,26 Q-12,26 -12,20 L-12,4 C-12,-6 -9,-17 0,-28Z" fill="#fff" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M-8,-4 Q0,-10 8,-4 L8,4 L-8,4Z" fill="#9CCBF2" stroke="${INK}" stroke-width="2"/>
+    ${luz(-12, -2, 'var(--luz-bb)', 2.6)}
+    ${luz(12, -2, 'var(--luz-be)', 2.6)}`;
+  let marcas = '';
+  for (let i = 0; i < 14; i++) {
+    const x = (i * 97) % 400, y = (i * 61) % 260;
+    marcas += `<path d="M${x},${y} q6,-4 12,0 t12,0" stroke="#fff" stroke-width="2" fill="none" opacity=".35" stroke-linecap="round"/>`;
+  }
+  return `<svg viewBox="0 0 400 260" role="img" aria-label="Vista de cima: navio vindo de frente para sua lancha">
+    ${defs}
+    <rect width="400" height="260" fill="#2A7FD0"/>
+    <g class="onda" style="--d:8s;--w:-97px">${marcas}<g transform="translate(400,0)">${marcas}</g></g>
+    <g class="revelar">
+      <path d="M200,110 Q198,140 150,180" stroke="#fff" stroke-width="2.5" stroke-dasharray="6 6" fill="none" opacity=".9"/>
+      <path d="M200,186 Q202,160 250,128" stroke="#fff" stroke-width="2.5" stroke-dasharray="6 6" fill="none" opacity=".9"/>
+    </g>
+    <g transform="translate(200,62) scale(.8)"><g class="guina" id="navioG" style="transform:rotate(180deg)">${navio}</g></g>
+    <g transform="translate(200,214)"><g class="guina" id="lanchaG" style="transform:rotate(0deg)">${lancha}</g></g>
+    ${rotulo(226, 244, 'VOCÊ', '#fff', 'start')}
+    <g class="revelar">
+      ${rotulo(16, 30, '•  1 APITO CURTO = "guinando para BORESTE"', '#fff', 'start')}
+    </g>
+  </svg>`;
+}
+
+/* ===================== áudio (Web Audio, sintetizado) ===================== */
+let ctx;
+function audio() { ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); return ctx; }
+function apito(inicio, dur) { // buzina de navio: duas fundamentais + harmônicos, passa-baixa
+  const a = audio(), g = a.createGain(), f = a.createBiquadFilter();
+  f.type = 'lowpass'; f.frequency.value = 1100;
+  g.gain.setValueAtTime(0, inicio);
+  g.gain.linearRampToValueAtTime(.22, inicio + .06);
+  g.gain.setValueAtTime(.22, inicio + dur - .12);
+  g.gain.linearRampToValueAtTime(0, inicio + dur);
+  [118, 177].forEach(fr => { const o = a.createOscillator(); o.type = 'sawtooth'; o.frequency.value = fr; o.connect(f); o.start(inicio); o.stop(inicio + dur + .05); });
+  f.connect(g); g.connect(a.destination);
+}
+function tocarSinal(seq, lento = false) { // seq: array de 'c' (curto ~1s) | 'l' (longo 4–6s)
+  const a = audio(); let t = a.currentTime + .1; const intervalo = lento ? 2 : 1;
+  const svg = document.querySelector('.cena');
+  seq.forEach(s => {
+    const dur = s === 'c' ? 1 : 5;
+    apito(t, dur);
+    const atraso = (t - a.currentTime) * 1000;
+    setTimeout(() => { svg.classList.remove('soprando'); void svg.offsetWidth; svg.classList.add('soprando'); }, atraso);
+    t += dur + intervalo;
+  });
+}
+function bip(ok) {
+  const a = audio(), t = a.currentTime;
+  (ok ? [660, 880] : [300, 220]).forEach((fr, i) => {
+    const o = a.createOscillator(), g = a.createGain();
+    o.type = ok ? 'triangle' : 'square'; o.frequency.value = fr;
+    g.gain.setValueAtTime(0, t + i*.09); g.gain.linearRampToValueAtTime(ok ? .15 : .06, t + i*.09 + .01); g.gain.exponentialRampToValueAtTime(.001, t + i*.09 + .22);
+    o.connect(g); g.connect(a.destination); o.start(t + i*.09); o.stop(t + i*.09 + .25);
+  });
+}
+
+/* ===================== conteúdo ===================== */
+const cenas = [
+  {
+    aba: 'Luzes', tag: '💡 Luzes de navegação', titulo: 'À noite, você avista estas luzes bem na sua proa, se aproximando. O que é e o que fazer?',
+    svg: cenaLuzes,
+    opcoes: [
+      'Embarcação a motor vindo de roda a roda: as duas guinam para boreste',
+      'Embarcação a vela vindo de frente: você deve manter o rumo',
+      'Embarcação a motor se afastando de você pela popa',
+      'Embarcação fundeada: basta contorná-la por qualquer bordo',
+    ],
+    certa: 0,
+    explica: 'Branca no mastro + vermelha e verde juntas = propulsão mecânica vindo de proa. Veleiro não usa luz de mastro. Em situação de roda a roda, as duas guinam para boreste e passam bombordo com bombordo.',
+    regra: 'RIPEAM · Regras 14 e 23',
+  },
+  {
+    aba: 'Boias', tag: '🛟 Balizamento IALA B', titulo: 'Você está ENTRANDO no porto. Por qual bordo deve deixar as boias vermelhas?',
+    svg: cenaBoias,
+    opcoes: [
+      'Por boreste (à minha direita)',
+      'Por bombordo (à minha esquerda)',
+      'Tanto faz, desde que tenha profundidade',
+      'Devo navegar entre duas boias vermelhas',
+    ],
+    certa: 0,
+    explica: 'No Brasil (Região B da IALA), quem entra no porto deixa as vermelhas por boreste e as verdes por bombordo. Formato e tope ajudam de dia: vermelha cônica ▲ e verde cilíndrica ■.',
+    regra: 'Sistema IALA · Região B',
+  },
+  {
+    aba: 'Apitos', tag: '📯 Sinais sonoros', titulo: 'O navio vindo de frente emite este sinal. O que ele está dizendo?', som: ['c'],
+    svg: cenaApito,
+    opcoes: [
+      'Estou guinando para boreste',
+      'Estou guinando para bombordo',
+      'Estou dando máquinas atrás',
+      'Não entendi suas intenções (dúvida)',
+    ],
+    certa: 0,
+    explica: '1 curto = guinando para boreste · 2 curtos = bombordo · 3 curtos = máquinas atrás · 5 ou mais curtos e rápidos = dúvida/perigo. Apito curto dura cerca de 1 s; longo, de 4 a 6 s.',
+    regra: 'RIPEAM · Regras 32 e 34',
+    aoRevelar: () => {
+      // ambos guinam para BORESTE (horário visto de cima) e passam bombordo com bombordo
+      document.getElementById('navioG').style.transform = 'rotate(220deg) translate(0,-85px)';
+      document.getElementById('lanchaG').style.transform = 'rotate(40deg) translate(0,-70px)';
+    },
+  },
+];
+
+/* ===================== motor da lição ===================== */
+let atual = 0, escolha = null, conferido = false;
+const $ = id => document.getElementById(id);
+function render() {
+  const c = cenas[atual]; escolha = null; conferido = false;
+  $('abas').innerHTML = cenas.map((x, i) => `<button class="${i===atual?'ativa':''}" data-i="${i}">Cena ${i+1} · ${x.aba}</button>`).join('');
+  $('barra').style.width = `${(atual / cenas.length) * 100 + 4}%`;
+  $('licao').innerHTML = `
+    <div class="tag">${c.tag}</div>
+    <h1>${c.titulo}</h1>
+    <div class="cena">${c.svg()}</div>
+    ${c.som ? `<div class="som">
+        <button class="btn-som" id="ouvir">🔊 Ouvir sinal</button>
+        <button class="btn-som lento" id="lento" aria-label="Ouvir devagar">🐢</button>
+      </div>` : ''}
+    <div class="opcoes">${c.opcoes.map((o, i) => `<button class="op" data-i="${i}"><span class="k">${i+1}</span>${o}</button>`).join('')}</div>`;
+  $('rodape').className = 'rodape';
+  $('btn').textContent = 'Verificar'; $('btn').disabled = true;
+  if (c.som) { $('ouvir').onclick = () => tocarSinal(c.som); $('lento').onclick = () => tocarSinal(c.som, true); }
+}
+document.addEventListener('click', e => {
+  const aba = e.target.closest('.abas button');
+  if (aba) { atual = +aba.dataset.i; render(); return; }
+  const op = e.target.closest('.op');
+  if (op && !conferido) {
+    document.querySelectorAll('.op').forEach(b => b.classList.remove('sel'));
+    op.classList.add('sel'); escolha = +op.dataset.i; $('btn').disabled = false;
+  }
+});
+document.addEventListener('keydown', e => {
+  const n = +e.key; if (n >= 1 && n <= 4 && !conferido) document.querySelectorAll('.op')[n-1]?.click();
+  if (e.key === 'Enter' && !$('btn').disabled) $('btn').click();
+});
+$('btn').onclick = () => {
+  const c = cenas[atual];
+  if (!conferido) {
+    conferido = true;
+    const ok = escolha === c.certa; bip(ok);
+    document.querySelectorAll('.op').forEach((b, i) => {
+      b.disabled = true;
+      if (i === c.certa) b.classList.add('certa'); else if (i === escolha) b.classList.add('errada');
+    });
+    document.querySelector('.cena').classList.add('revelado');
+    c.aoRevelar && c.aoRevelar();
+    $('rodape').className = 'rodape ' + (ok ? 'ok' : 'erro');
+    $('fbIc').textContent = ok ? '✓' : '✕';
+    $('fbTit').textContent = ok ? 'Mandou bem, marujo!' : 'Quase! Resposta certa:';
+    $('fbTxt').textContent = (ok ? '' : c.opcoes[c.certa] + '. ') + c.explica;
+    $('fbRegra').textContent = c.regra;
+    $('btn').textContent = 'Continuar';
+    $('barra').style.width = `${((atual + 1) / cenas.length) * 100}%`;
+  } else {
+    atual = (atual + 1) % cenas.length; render(); window.scrollTo({top:0,behavior:'smooth'});
+  }
+};
+render();
+</script>
+</body>
+</html>

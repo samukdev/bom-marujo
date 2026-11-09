@@ -1,0 +1,35 @@
+/* Design tokens — Bom Marujo. Cores náuticas (luzes/boias) ficam nos componentes de cena, nunca na UI. */
+:root {
+  --azul: #1765d8;
+  --azul-escuro: #0e4ba8;
+  --azul-claro: #e6f0fd;
+  --tinta: #0b1f3f;
+  --texto-2: #4a5b78;
+  --fundo: #f4f7fb;
+  --card: #ffffff;
+  --borda: #dce4ef;
+  --creme: #f5f1e6;
+  --ok: #1e9e6a;
+  --ok-escuro: #137049;
+  --ok-bg: #ddf5ea;
+  --erro: #d2463a;
+  --erro-escuro: #a42d23;
+  --erro-bg: #fce3e0;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; }
+
+body {
+  min-height: 100dvh;
+  background: var(--fundo);
+  color: var(--tinta);
+  font-family: var(--fonte), system-ui, sans-serif;
+  font-weight: 600;
+  -webkit-font-smoothing: antialiased;
+}
+
+button { font-family: inherit; }
+
+:focus-visible { outline: 3px solid var(--azul); outline-offset: 2px; }
