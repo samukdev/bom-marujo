@@ -2,85 +2,79 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import type { CartaoConceito, Licao, Questao } from '@/content/tipos';
-import { CenaInterativa } from '@/components/cenas/CenaInterativa';
+import type { Cartao, Licao, Tema } from '@/content';
 import { bip } from '@/lib/audio/apito';
 import { concluirLicao } from '@/lib/progresso';
 import { Marujo, type Pose } from '@/components/marujo/Marujo';
+import { ehAvaliativo, tipoDe } from './cartoes/registro';
+import type { Avaliacao } from './cartoes/tipos';
 import s from './licao.module.css';
 
-type Passo = { tipo: 'conceito'; c: CartaoConceito } | { tipo: 'questao'; q: Questao; repeticao?: boolean };
+type Passo = { cartao: Cartao; repeticao?: boolean };
 
-/** Embaralha as alternativas de forma determinística (mesma ordem no servidor e no cliente). */
-function embaralhar(q: Questao, sal = ''): Questao {
-  let h = 2166136261;
-  for (const ch of q.id + sal) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
-  const idx = q.opcoes.map((_, i) => i);
-  for (let i = idx.length - 1; i > 0; i--) {
-    h = Math.imul(h ^ (h >>> 15), 2246822507);
-    const j = (h >>> 0) % (i + 1);
-    [idx[i], idx[j]] = [idx[j]!, idx[i]!];
-  }
-  return { ...q, opcoes: idx.map((i) => q.opcoes[i]!), correta: idx.indexOf(q.correta) };
+/** Prepara o cartão para a tela (ex.: embaralha alternativas); `sal` muda na repetição. */
+function preparar(c: Cartao, sal = ''): Cartao {
+  const t = tipoDe(c);
+  return t.avaliativo ? t.preparar(c, sal) : c;
 }
 
-export function LessonPlayer({ licao }: { licao: Licao }) {
-  const inicial = useMemo<Passo[]>(
-    () => [
-      ...licao.conceitos.map((c) => ({ tipo: 'conceito' as const, c })),
-      ...licao.questoes.map((q) => ({ tipo: 'questao' as const, q: embaralhar(q) })),
-    ],
-    [licao],
-  );
+export function LessonPlayer({ licao, tema }: { licao: Licao; tema?: Tema }) {
+  const inicial = useMemo<Passo[]>(() => licao.cartoes.map((c) => ({ cartao: preparar(c) })), [licao]);
+  const totalAvaliativos = useMemo(() => licao.cartoes.filter(ehAvaliativo).length, [licao]);
   const [fila, setFila] = useState<Passo[]>(inicial);
   const [i, setI] = useState(0);
-  const [escolha, setEscolha] = useState<number | null>(null);
-  const [conferido, setConferido] = useState(false);
+  const [resposta, setResposta] = useState<unknown>(null);
+  const [avaliacao, setAvaliacao] = useState<Avaliacao | null>(null);
   const [acertos, setAcertos] = useState(0);
   const [fim, setFim] = useState<{ xp: number } | null>(null);
   const [sequencia, setSequencia] = useState(0);
   const [reacao, setReacao] = useState<Pose>('aprovando');
 
   const passo = fila[i];
+  const tipo = passo ? tipoDe(passo.cartao) : null;
+  const conferido = avaliacao !== null;
+  const ok = avaliacao?.certo ?? false;
   const totalBase = inicial.length;
   const progresso = fim ? 100 : (Math.min(i, totalBase) / totalBase) * 100;
-  const ok = passo?.tipo === 'questao' && conferido && escolha === passo.q.correta;
 
   function avancar() {
     if (i + 1 >= fila.length) {
-      const qs = licao.questoes.length;
-      setFim({ xp: concluirLicao(licao.id, acertos, qs) });
+      setFim({ xp: concluirLicao(licao.id, acertos, totalAvaliativos) });
       return;
     }
     setI(i + 1);
-    setEscolha(null);
-    setConferido(false);
+    setResposta(null);
+    setAvaliacao(null);
   }
 
   function conferir() {
-    if (passo?.tipo !== 'questao' || escolha === null) return;
-    const certo = escolha === passo.q.correta;
-    bip(certo);
-    setConferido(true);
+    if (!passo || !tipo?.avaliativo || resposta === null || conferido) return;
+    const a = tipo.avaliar(passo.cartao, resposta);
+    bip(a.certo);
+    setAvaliacao(a);
     // Reação do Marujo: durão — joinha no acerto, orgulho em sequência, desconfiança no erro, bravo se errar de novo.
-    const seq = certo ? sequencia + 1 : 0;
+    const seq = a.certo ? sequencia + 1 : 0;
     setSequencia(seq);
-    setReacao(certo ? (seq >= 3 ? 'orgulhoso' : 'aprovando') : passo.repeticao ? 'bravo' : 'cetico');
-    if (certo && !passo.repeticao) setAcertos((a) => a + 1);
-    // Erros voltam no fim da lição (uma vez).
-    // (na repetição, outra ordem de alternativas — para não decorar a posição)
-    if (!certo && !passo.repeticao) setFila((f) => [...f, { tipo: 'questao', q: embaralhar(passo.q, 'bis'), repeticao: true }]);
+    setReacao(a.certo ? (seq >= 3 ? 'orgulhoso' : 'aprovando') : passo.repeticao ? 'bravo' : 'cetico');
+    if (a.certo && !passo.repeticao) setAcertos((n) => n + 1);
+    // Erros voltam no fim da lição (uma vez), em outra ordem — para não decorar a posição.
+    if (!a.certo && !passo.repeticao) {
+      const original = licao.cartoes.find((c) => c.id === passo.cartao.id) ?? passo.cartao;
+      setFila((f) => [...f, { cartao: preparar(original, 'bis'), repeticao: true }]);
+    }
   }
 
-  // teclado: 1–4 escolhe, Enter confere/continua
+  // teclado: atalhos do tipo (ex.: 1–4 escolhe), Enter confere/continua
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (fim) return;
-      const n = Number(e.key);
-      if (passo?.tipo === 'questao' && !conferido && n >= 1 && n <= passo.q.opcoes.length) setEscolha(n - 1);
+      if (fim || !passo || !tipo) return;
+      if (tipo.avaliativo && !conferido) {
+        const r = tipo.respostaPorTecla?.(passo.cartao, e.key);
+        if (r !== undefined) setResposta(r);
+      }
       if (e.key === 'Enter') {
-        if (passo?.tipo === 'conceito' || conferido) avancar();
-        else if (escolha !== null) conferir();
+        if (!tipo.avaliativo || conferido) avancar();
+        else if (resposta !== null) conferir();
       }
     };
     window.addEventListener('keydown', onKey);
@@ -88,7 +82,7 @@ export function LessonPlayer({ licao }: { licao: Licao }) {
   });
 
   if (fim) {
-    const qs = licao.questoes.length;
+    const qs = Math.max(totalAvaliativos, 1);
     const pct = acertos / qs;
     const [poseFim, frase] =
       pct === 1
@@ -114,7 +108,7 @@ export function LessonPlayer({ licao }: { licao: Licao }) {
       </div>
     );
   }
-  if (!passo) return null;
+  if (!passo || !tipo) return null;
 
   return (
     <>
@@ -124,61 +118,27 @@ export function LessonPlayer({ licao }: { licao: Licao }) {
           <div className={s.progresso}><i style={{ width: `${Math.max(progresso, 3)}%` }} /></div>
         </div>
 
-        {passo.tipo === 'conceito' ? (
-          <>
-            <div className={s.tag}>✨ Novo conceito</div>
-            <h1 className={s.titulo}>{passo.c.titulo}</h1>
-            {passo.c.cena && <CenaInterativa key={passo.c.id} spec={passo.c.cena} revelado />}
-            <p className={s.texto}>{passo.c.texto}</p>
-            {passo.c.falaMarujo && (
-              <div className={s.marujo}>
-                <Marujo key={passo.c.id} pose={passo.c.pose ?? 'ensinando'} altura={130} />
-                <div className={s.balao}>{passo.c.falaMarujo}</div>
-              </div>
-            )}
-          </>
-        ) : (
-          <>
-            <div className={s.tag}>{passo.repeticao ? '🔁 Vamos de novo' : licaoTag(licao.temaId)}</div>
-            <h1 className={s.titulo}>{passo.q.enunciado}</h1>
-            <CenaInterativa key={`${passo.q.id}-${i}`} spec={passo.q.cena} revelado={conferido} som={passo.q.som} />
-            <div className={s.opcoes}>
-              {passo.q.opcoes.map((o, k) => {
-                const cls = [s.op];
-                if (!conferido && escolha === k) cls.push(s.sel);
-                if (conferido && k === passo.q.correta) cls.push(s.certa);
-                if (conferido && k === escolha && k !== passo.q.correta) cls.push(s.errada);
-                return (
-                  <button key={k} className={cls.join(' ')} disabled={conferido} onClick={() => setEscolha(k)}>
-                    <span className={s.k}>{k + 1}</span>
-                    {o}
-                  </button>
-                );
-              })}
-            </div>
-          </>
-        )}
+        <div className={s.tag}>{!tipo.avaliativo ? tipo.rotulo : passo.repeticao ? '🔁 Vamos de novo' : (tema ? `${tema.icone} ${tema.titulo}` : '⚓ Questão')}</div>
+        <tipo.Tela cartao={passo.cartao} resposta={resposta} responder={setResposta} conferido={conferido} chave={String(i)} />
       </div>
 
       <div className={`${s.rodape} ${conferido ? (ok ? s.rodapeOk : s.rodapeErro) : ''}`}>
         <div className={s.rodapeIn}>
-          {conferido && passo.tipo === 'questao' && (
+          {avaliacao && (
             <div className={s.fb} role="status" aria-live="polite">
               <Marujo key={`r-${i}`} pose={reacao} altura={96} className={s.reacao} />
               <div className={s.ic}>{ok ? '✓' : '✕'}</div>
               <div>
                 <b>{TITULO_REACAO[reacao] ?? (ok ? 'Mandou bem, marujo!' : 'Resposta certa:')}</b>
-                <p>{(ok ? '' : passo.q.opcoes[passo.q.correta] + '. ') + passo.q.explicacao}</p>
-                <span className={s.regra}>{passo.q.referencia}</span>
+                <p>{(ok ? '' : avaliacao.respostaCerta + '. ') + avaliacao.explicacao}</p>
+                <span className={s.regra}>{avaliacao.referencia}</span>
               </div>
             </div>
           )}
-          {passo.tipo === 'conceito' ? (
-            <button className={s.principal} onClick={avancar}>Continuar</button>
-          ) : conferido ? (
+          {!tipo.avaliativo || conferido ? (
             <button className={s.principal} onClick={avancar}>Continuar</button>
           ) : (
-            <button className={s.principal} disabled={escolha === null} onClick={conferir}>Verificar</button>
+            <button className={s.principal} disabled={resposta === null} onClick={conferir}>Verificar</button>
           )}
         </div>
       </div>
@@ -193,9 +153,3 @@ const TITULO_REACAO: Partial<Record<Pose, string>> = {
   bravo: 'De novo, marujo?! Presta atenção!',
 };
 
-function licaoTag(temaId: string) {
-  return (
-    { luzes: '💡 Luzes de navegação', sons: '📯 Sinais sonoros', balizamento: '🛟 Balizamento IALA B', marinharia: '🪢 Nós e voltas' }[temaId] ??
-    '⚓ Questão'
-  );
-}

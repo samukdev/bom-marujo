@@ -10,14 +10,11 @@
 
 export type CorLuz = 'branca' | 'vermelha' | 'verde' | 'amarela';
 
-export type TipoEmbarcacao =
-  | 'propulsao-mecanica'
-  | 'vela'
-  | 'fundeada'
-  | 'sem-governo'
-  | 'pesca-arrasto';
+export const TIPOS_EMBARCACAO = ['propulsao-mecanica', 'vela', 'fundeada', 'sem-governo', 'pesca-arrasto'] as const;
+export type TipoEmbarcacao = (typeof TIPOS_EMBARCACAO)[number];
 
-export type Porte = 'menor50' | 'maior50';
+export const PORTES = ['menor50', 'maior50'] as const;
+export type Porte = (typeof PORTES)[number];
 
 export type Setor = 'mastro' | 'boreste' | 'bombordo' | 'alcancado' | 'circular';
 

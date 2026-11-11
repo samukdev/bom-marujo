@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import type { CenaSpec } from '@/content/tipos';
+import type { CenaSpec } from '@/content';
 import { SINAIS, type SinalId } from '@/lib/ripeam/sinais';
 import { tocarSinal, type Reproducao } from '@/lib/audio/apito';
 import { Cena, type EstadoApito } from './Cena';
+import { renderizador } from './registro';
 import s from './cenas.module.css';
 
 /**
@@ -36,8 +37,8 @@ export function CenaInterativa({ spec, revelado = false, som }: { spec: CenaSpec
     void r.fim.then(() => { setTocando(false); setAviso(''); });
   };
 
-  // revelação animada: nós sempre; demais cenas depois da resposta
-  const temReplay = spec.tipo === 'no' ? !(spec.oculto && !revelado) : revelado && spec.tipo !== 'bordos';
+  const { temReplay: replay } = renderizador(spec);
+  const temReplay = replay ? replay(spec, revelado) : revelado;
 
   return (
     <div className={s.quadro}>

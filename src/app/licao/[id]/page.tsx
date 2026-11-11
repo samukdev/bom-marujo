@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
-import { LICOES, getLicao } from '@/content/licoes';
+import { LICOES, TEMAS, getLicao } from '@/content';
 import { LessonPlayer } from '@/components/licao/LessonPlayer';
 import { Marujo } from '@/components/marujo/Marujo';
 
@@ -12,7 +12,7 @@ async function Conteudo({ params }: { params: PageProps<'/licao/[id]'>['params']
   const { id } = await params;
   const licao = getLicao(id);
   if (!licao) notFound();
-  return <LessonPlayer licao={licao} />;
+  return <LessonPlayer licao={licao} tema={TEMAS.find((t) => t.id === licao.temaId)} />;
 }
 
 // URL data fica atrás de Suspense para a navegação ser instantânea (Next 16 / Cache Components).

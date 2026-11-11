@@ -4,7 +4,8 @@
  */
 
 export type Bordo = 'boreste' | 'bombordo';
-export type Sentido = 'entrando' | 'saindo';
+export const SENTIDOS = ['entrando', 'saindo'] as const;
+export type Sentido = (typeof SENTIDOS)[number];
 
 export interface MarcaLateral {
   /** bordo por onde a marca deve ser deixada por quem ENTRA */

@@ -4,7 +4,7 @@ import { asset } from '@/lib/base';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Marujo } from '@/components/marujo/Marujo';
-import { LICOES, TEMAS } from '@/content/licoes';
+import { LICOES, TEMAS } from '@/content';
 import { useProgresso } from '@/lib/progresso';
 import s from './trilha.module.css';
 
