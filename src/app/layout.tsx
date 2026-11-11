@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Nunito } from 'next/font/google';
 import './globals.css';
 import { asset } from '@/lib/base';
+import { ProvedorSessao } from '@/lib/conta/sessao';
 
 const nunito = Nunito({
   variable: '--fonte',
@@ -22,7 +23,9 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="pt-BR" className={nunito.variable}>
-      <body>{children}</body>
+      <body>
+        <ProvedorSessao>{children}</ProvedorSessao>
+      </body>
     </html>
   );
 }

@@ -3,7 +3,10 @@ import { asset } from '@/lib/base';
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { Avatar } from '@/components/conta/Avatar';
 import { Marujo } from '@/components/marujo/Marujo';
+import { useSessao } from '@/lib/conta/sessao';
+import { CONTAS_ATIVAS } from '@/lib/conta/supabase';
 import { LICOES, TEMAS } from '@/content';
 import { useProgresso } from '@/lib/progresso';
 import s from './trilha.module.css';
@@ -13,6 +16,7 @@ const DESLOCAMENTO = [0, 56, 84, 56, 0, -56, -84, -56];
 
 export function Trilha() {
   const { concluidas, xp } = useProgresso();
+  const { usuario, perfil, carregando } = useSessao();
   let n = 0;
 
   return (
@@ -24,7 +28,17 @@ export function Trilha() {
           </span>
           Bom Marujo
         </div>
-        <div className={s.xp} title="Experiência">⭐ {xp} XP</div>
+        <div className={s.direita}>
+          <div className={s.xp} title="Experiência">⭐ {xp} XP</div>
+          {CONTAS_ATIVAS && !carregando &&
+            (usuario ? (
+              <Link href="/perfil" aria-label="Seu perfil" className={s.perfil}>
+                <Avatar perfil={perfil} email={usuario.email} tamanho={40} />
+              </Link>
+            ) : (
+              <Link href="/entrar" className={s.entrar}>Entrar</Link>
+            ))}
+        </div>
       </header>
 
       <div className={s.boasVindas}>

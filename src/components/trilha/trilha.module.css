@@ -22,6 +22,12 @@
   border-left: 2px solid var(--borda); border-bottom: 2px solid var(--borda); transform: translateY(-50%) rotate(45deg);
 }
 .xp { font-weight: 900; color: #c98a00; }
+.direita { display: flex; align-items: center; gap: 12px; }
+.perfil { display: flex; border-radius: 50%; }
+.entrar {
+  font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em; text-decoration: none; color: var(--azul);
+  background: var(--card); border: 2px solid var(--borda); border-radius: 12px; padding: 8px 12px; box-shadow: 0 3px 0 var(--borda);
+}
 
 .unidade { margin-bottom: 28px; }
 .faixa {
