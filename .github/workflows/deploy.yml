@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # disparado pelo Supabase quando o conteúdo muda (trigger disparar_rebuild)
+  repository_dispatch:
+    types: [conteudo]
 
 permissions:
   contents: read
@@ -24,6 +27,11 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # o conteúdo publicado vem do banco; o JSON do repositório é só a cópia para desenvolvimento
+      - run: npm run conteudo
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
       - run: npm run typecheck
       - run: npm run lint
       - run: npm test
