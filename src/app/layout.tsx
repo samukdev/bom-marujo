@@ -3,6 +3,7 @@ import { Nunito } from 'next/font/google';
 import './globals.css';
 import { asset } from '@/lib/base';
 import { ProvedorSessao } from '@/lib/conta/sessao';
+import { ExigirLogin } from '@/components/conta/ExigirLogin';
 
 const nunito = Nunito({
   variable: '--fonte',
@@ -24,7 +25,9 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="pt-BR" className={nunito.variable}>
       <body>
-        <ProvedorSessao>{children}</ProvedorSessao>
+        <ProvedorSessao>
+          <ExigirLogin>{children}</ExigirLogin>
+        </ProvedorSessao>
       </body>
     </html>
   );
