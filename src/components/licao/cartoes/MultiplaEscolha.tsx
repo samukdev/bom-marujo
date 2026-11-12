@@ -3,6 +3,7 @@
 import type { CartaoDe } from '@/content';
 import { Cena } from '@/components/cenas/Cena';
 import { CenaInterativa } from '@/components/cenas/CenaInterativa';
+import { Marujo } from '@/components/marujo/Marujo';
 import { SINAIS, notacao } from '@/lib/ripeam/sinais';
 import type { TipoAvaliativo } from './tipos';
 import { estiloRevisao as r } from './revisao';
@@ -39,7 +40,11 @@ export const multiplaEscolha: TipoAvaliativo<C, number> = {
   Tela: ({ cartao: q, resposta, responder, conferido, chave }) => (
     <>
       <h1 className={s.titulo}>{q.enunciado}</h1>
-      <CenaInterativa key={`${q.id}-${chave}`} spec={q.cena} revelado={conferido} som={q.som} />
+      {q.cena ? (
+        <CenaInterativa key={`${q.id}-${chave}`} spec={q.cena} revelado={conferido} som={q.som} />
+      ) : (
+        <div style={{ display: 'grid', justifyItems: 'center' }}><Marujo pose="pensando" altura={120} /></div>
+      )}
       <div className={s.opcoes}>
         {q.opcoes.map((o, k) => {
           const cls = [s.op];
@@ -60,10 +65,12 @@ export const multiplaEscolha: TipoAvaliativo<C, number> = {
     <>
       <div style={r.selo}>QUESTÃO · {q.id}{q.som ? ` · som: ${notacao(SINAIS[q.som].sinal)} (${q.som})` : ''}</div>
       <h3 style={r.h3}>{q.enunciado}</h3>
-      <div style={r.duas}>
-        <div><div style={r.legenda}>ANTES da resposta</div><div style={r.cena}><Cena spec={q.cena} /></div></div>
-        <div><div style={r.legenda}>DEPOIS da resposta</div><div style={r.cena}><Cena spec={q.cena} revelado apito={{ n: 1, dur: 1 }} /></div></div>
-      </div>
+      {q.cena && (
+        <div style={r.duas}>
+          <div><div style={r.legenda}>ANTES da resposta</div><div style={r.cena}><Cena spec={q.cena} /></div></div>
+          <div><div style={r.legenda}>DEPOIS da resposta</div><div style={r.cena}><Cena spec={q.cena} revelado apito={{ n: 1, dur: 1 }} /></div></div>
+        </div>
+      )}
       <ol style={{ margin: '10px 0 6px' }}>
         {q.opcoes.map((o, i) => (
           <li key={i} style={{ fontWeight: i === q.correta ? 900 : 600, color: i === q.correta ? 'var(--ok-escuro)' : undefined }}>

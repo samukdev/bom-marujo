@@ -70,7 +70,8 @@ export const CartaoMultiplaEscolhaSchema = z.object({
   tipo: z.literal('multipla-escolha'),
   id: Id,
   enunciado: Texto,
-  cena: CenaSchema,
+  /** opcional: questões de teoria (salvatagem, regras) aparecem com o Marujo no lugar da cena */
+  cena: CenaSchema.optional(),
   /** se presente, mostra 🔊/🐢 com este sinal */
   som: SinalIdSchema.optional(),
   opcoes: z.array(Texto).min(2).max(4),

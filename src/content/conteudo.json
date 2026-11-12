@@ -4,7 +4,9 @@
       "id": "luzes",
       "icone": "💡",
       "licoes": [
-        "luzes-quem-vem-la"
+        "luzes-quem-vem-la",
+        "luzes-quem-mais",
+        "luzes-trabalhando"
       ],
       "titulo": "Luzes de navegação"
     },
@@ -12,7 +14,8 @@
       "id": "sons",
       "icone": "📯",
       "licoes": [
-        "apitos-manobra"
+        "apitos-manobra",
+        "sons-cerracao-canais"
       ],
       "titulo": "Sinais sonoros"
     },
@@ -20,32 +23,38 @@
       "id": "balizamento",
       "icone": "🛟",
       "licoes": [
-        "balizamento-entrando"
+        "balizamento-entrando",
+        "balizamento-cardinais"
       ],
       "titulo": "Balizamento IALA B"
     },
     {
       "id": "governo",
       "icone": "🧭",
-      "licoes": [],
-      "titulo": "Regras de governo",
-      "emBreve": true
+      "licoes": [
+        "governo-quem-da-passagem",
+        "governo-risco-veleiros"
+      ],
+      "titulo": "Regras de governo"
     },
     {
       "id": "marinharia",
       "icone": "🪢",
       "licoes": [
         "nos-arremate-emendas",
-        "nos-alcas-voltas"
+        "nos-alcas-voltas",
+        "nos-na-pratica"
       ],
       "titulo": "Marinharia: nós e voltas"
     },
     {
       "id": "salvatagem",
       "icone": "🦺",
-      "licoes": [],
-      "titulo": "Salvatagem e sobrevivência",
-      "emBreve": true
+      "licoes": [
+        "salvatagem-seguranca",
+        "salvatagem-prevencao"
+      ],
+      "titulo": "Salvatagem e sobrevivência"
     }
   ],
   "licoes": [
@@ -203,6 +212,253 @@
       "descricao": "Luzes de bordo, mastro, alcançado e fundeio"
     },
     {
+      "id": "luzes-quem-mais",
+      "temaId": "luzes",
+      "titulo": "Quem mais vem lá?",
+      "cartoes": [
+        {
+          "id": "c-dois-mastros",
+          "cena": {
+            "tipo": "luzes-noite",
+            "aspecto": 0,
+            "embarcacao": {
+              "tipo": "propulsao-mecanica",
+              "porte": "maior50"
+            }
+          },
+          "tipo": "conceito",
+          "texto": "Embarcação de propulsão mecânica com 50 m ou mais mostra DUAS luzes de mastro brancas: a de ré fica mais alta que a de vante. Menores podem exibir a segunda, mas com 50 m ou mais ela é obrigatória. Vistas de proa, as duas brancas alinhadas, mais a vermelha e a verde, avisam: navio grande vindo na sua direção.",
+          "titulo": "Navio grande tem dois mastros",
+          "falaMarujo": "Duas brancas em escada? É navio grandão. Dá espaço!"
+        },
+        {
+          "id": "c-sem-governo",
+          "cena": {
+            "tipo": "luzes-noite",
+            "aspecto": 60,
+            "embarcacao": {
+              "tipo": "sem-governo",
+              "comSeguimento": false
+            }
+          },
+          "tipo": "conceito",
+          "texto": "Duas luzes vermelhas circulares, uma sobre a outra, indicam embarcação SEM GOVERNO: não consegue manobrar (máquina ou leme em pane). Se ainda tem seguimento, mostra também as luzes de bordo e de alcançado.",
+          "titulo": "Vermelho sobre vermelho",
+          "falaMarujo": "Vermelho sobre vermelho: o navio não governa. Quem se afasta é você."
+        },
+        {
+          "id": "c-arrasto",
+          "cena": {
+            "tipo": "luzes-noite",
+            "aspecto": 30,
+            "embarcacao": {
+              "tipo": "pesca-arrasto"
+            }
+          },
+          "tipo": "conceito",
+          "texto": "Pesqueiro engajado em pesca de ARRASTO mostra duas luzes circulares: verde em cima, branca embaixo (com 50 m ou mais, também uma luz de mastro a ré, acima da verde). Com seguimento, também bordos e alcançado. Ele arrasta rede por trás, então nunca corte a popa dele de perto.",
+          "titulo": "Verde sobre branca: arrasto",
+          "falaMarujo": "Verde sobre branco: tem rede arrastando aí atrás!"
+        },
+        {
+          "id": "c-fundeado-grande",
+          "cena": {
+            "tipo": "luzes-noite",
+            "aspecto": 270,
+            "embarcacao": {
+              "tipo": "fundeada",
+              "porte": "maior50"
+            }
+          },
+          "tipo": "conceito",
+          "texto": "Fundeado com 50 m ou mais: duas luzes brancas circulares, a de VANTE mais alta que a de ré. É o contrário do navio navegando, em que a luz de mastro de ré é a mais alta.",
+          "titulo": "Fundeado grande",
+          "falaMarujo": "Fundeado, a alta vai na proa. Navegando, a alta vai na popa."
+        },
+        {
+          "id": "q-dois-mastros",
+          "cena": {
+            "tipo": "luzes-noite",
+            "aspecto": 0,
+            "embarcacao": {
+              "tipo": "propulsao-mecanica",
+              "porte": "maior50"
+            }
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Navio de propulsão mecânica com 50 m ou mais, vindo de frente",
+            "Duas lanchas pequenas lado a lado",
+            "Navio fundeado com 50 m ou mais",
+            "Veleiro com motor desligado"
+          ],
+          "correta": 0,
+          "enunciado": "À noite, bem pela sua proa, você vê duas luzes brancas (a de trás mais alta), uma vermelha e uma verde. O que vem lá?",
+          "explicacao": "Duas luzes de mastro, com a de ré mais alta, são de embarcação de propulsão mecânica com 50 m ou mais. Vendo vermelha e verde juntas, ele vem bem na sua direção.",
+          "referencia": "RIPEAM · Regra 23(a)"
+        },
+        {
+          "id": "q-sem-governo",
+          "cena": {
+            "tipo": "luzes-noite",
+            "aspecto": 120,
+            "embarcacao": {
+              "tipo": "sem-governo",
+              "comSeguimento": false
+            }
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Embarcação sem governo, sem seguimento",
+            "Embarcação fundeada",
+            "Pesqueiro de arrasto",
+            "Navio dando máquinas atrás"
+          ],
+          "correta": 0,
+          "enunciado": "Você vê só duas luzes vermelhas, uma em cima da outra, visíveis de qualquer ângulo. O que é?",
+          "explicacao": "Duas circulares vermelhas em linha vertical = sem governo. Sem luzes de bordo nem de alcançado, ela está parada na água (sem seguimento). Ela não consegue sair do seu caminho: quem manobra é você.",
+          "referencia": "RIPEAM · Regras 18 e 27(a)"
+        },
+        {
+          "id": "q-arrasto",
+          "cena": {
+            "tipo": "luzes-noite",
+            "aspecto": 0,
+            "embarcacao": {
+              "tipo": "pesca-arrasto"
+            }
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Pesqueiro de arrasto, com seguimento, vindo na sua direção",
+            "Embarcação sem governo",
+            "Veleiro que também usa motor",
+            "Embarcação fundeada de popa para você"
+          ],
+          "correta": 0,
+          "enunciado": "Duas luzes circulares, VERDE em cima e BRANCA embaixo, e ainda a vermelha e a verde de bordo, bem pela sua proa. O que é?",
+          "explicacao": "Verde sobre branca = pesca de arrasto. As luzes de bordo mostram que ele tem seguimento e, vendo as duas, que vem de proa para você.",
+          "referencia": "RIPEAM · Regra 26(b)"
+        },
+        {
+          "id": "q-fundeado-grande",
+          "cena": {
+            "tipo": "luzes-noite",
+            "aspecto": 90,
+            "embarcacao": {
+              "tipo": "fundeada",
+              "porte": "maior50"
+            }
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Navio fundeado com 50 m ou mais",
+            "Navio de propulsão mecânica navegando",
+            "Duas lanchas fundeadas",
+            "Pesqueiro recolhendo a rede"
+          ],
+          "correta": 0,
+          "enunciado": "Duas luzes brancas paradas, visíveis de todos os lados, a de vante mais ALTA que a de ré. O que é?",
+          "explicacao": "Fundeada com 50 m ou mais: duas circulares brancas, a de vante mais alta. Atenção: no navio navegando é o contrário, a luz de mastro de RÉ é a mais alta.",
+          "referencia": "RIPEAM · Regra 30(a)"
+        },
+        {
+          "id": "q-preferencia-pesca",
+          "cena": {
+            "tipo": "luzes-noite",
+            "aspecto": 330,
+            "embarcacao": {
+              "tipo": "pesca-arrasto"
+            }
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Você, na lancha",
+            "O pesqueiro, porque está a motor",
+            "Quem estiver mais à direita",
+            "Ninguém: os dois mantêm o rumo"
+          ],
+          "correta": 0,
+          "enunciado": "Em mar aberto, de lancha, você vê à proa um barco com verde sobre branca. Quem deve se manter fora do caminho?",
+          "explicacao": "Embarcação de propulsão mecânica se mantém fora do caminho de quem está engajado na pesca, além de sem governo, com manobra restrita e veleiro. Dê bastante espaço, principalmente pela popa, onde vai a rede.",
+          "referencia": "RIPEAM · Regra 18(a)"
+        }
+      ],
+      "descricao": "Navio grande, sem governo, pescando e fundeado"
+    },
+    {
+      "id": "luzes-trabalhando",
+      "temaId": "luzes",
+      "titulo": "Luzes de quem está trabalhando",
+      "cartoes": [
+        {
+          "id": "c-luzes-trabalho",
+          "pose": "ensinando",
+          "tipo": "conceito",
+          "texto": "Pesca que não é de arrasto (rede de espera, espinhel): vermelha sobre branca, circulares; se o aparelho se estende mais de 150 m, uma branca circular mostra o lado dele. Manobra restrita (dragando, lançando cabo submarino): vermelha, branca, vermelha, uma sobre a outra. Com seguimento, pesca e manobra restrita mostram também bordos e alcançado (a de manobra restrita, também a de mastro). Calado restrito: PODE exibir três vermelhas em linha vertical, além das luzes normais. Rebocando (propulsão mecânica): duas luzes de mastro em linha vertical (três se o reboque passa de 200 m), luzes de bordo e uma luz AMARELA de reboque acima da de alcançado.",
+          "titulo": "Quem trabalha avisa no mastro",
+          "falaMarujo": "Verde sobre branco: arrasto. Vermelho sobre branco: pescador."
+        },
+        {
+          "id": "q-pesca-comum",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Embarcação pescando, mas não de arrasto",
+            "Pesqueiro de arrasto",
+            "Embarcação sem governo",
+            "Prático em serviço"
+          ],
+          "correta": 0,
+          "enunciado": "Duas luzes circulares, VERMELHA em cima e BRANCA embaixo. O que é?",
+          "explicacao": "Vermelha sobre branca = engajada na pesca, exceto arrasto. Arrasto é verde sobre branca. Sem governo são duas vermelhas. Prático em serviço é o inverso: branca sobre vermelha.",
+          "referencia": "RIPEAM · Regras 26(c) e 29"
+        },
+        {
+          "id": "q-manobra-restrita",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Embarcação com capacidade de manobra restrita",
+            "Embarcação restrita pelo calado",
+            "Embarcação sem governo",
+            "Pesqueiro de arrasto"
+          ],
+          "correta": 0,
+          "enunciado": "Três luzes circulares em linha vertical: vermelha, BRANCA no meio, vermelha. O que indicam?",
+          "explicacao": "Vermelha-branca-vermelha = manobra restrita (dragagem, serviço submarino, reabastecimento no mar). Ela não consegue sair do seu caminho: dê espaço.",
+          "referencia": "RIPEAM · Regras 18 e 27(b)"
+        },
+        {
+          "id": "q-calado-restrito",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Restrito pelo seu calado: só pode navegar ali",
+            "Sem governo",
+            "Está rebocando",
+            "Está fundeado"
+          ],
+          "correta": 0,
+          "enunciado": "Um navio grande no canal mostra, além das luzes normais, TRÊS vermelhas em linha vertical. O que isso quer dizer?",
+          "explicacao": "Três vermelhas = restrita pelo calado. Lancha, veleiro e pesqueiro devem evitar atrapalhar a passagem dele.",
+          "referencia": "RIPEAM · Regras 18(d) e 28"
+        },
+        {
+          "id": "q-reboque",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Rebocando outra embarcação",
+            "Pescando de arrasto",
+            "Fundeado",
+            "Pedindo socorro"
+          ],
+          "correta": 0,
+          "enunciado": "Por ante a ré de um navio, você vê uma luz AMARELA acima da luz branca de alcançado. O que ele está fazendo?",
+          "explicacao": "A luz de reboque é amarela e fica acima da de alcançado. Cuidado: nunca passe entre o rebocador e o rebocado, o cabo pode estar quase na superfície.",
+          "referencia": "RIPEAM · Regra 24(a)"
+        }
+      ],
+      "descricao": "Pesca, manobra restrita, calado restrito e reboque"
+    },
+    {
       "id": "apitos-manobra",
       "temaId": "sons",
       "titulo": "Apitos de manobra",
@@ -307,6 +563,160 @@
       "descricao": "1, 2 e 3 apitos curtos e o sinal de dúvida"
     },
     {
+      "id": "sons-cerracao-canais",
+      "temaId": "sons",
+      "titulo": "Cerração e canais",
+      "cartoes": [
+        {
+          "id": "c-cerracao",
+          "cena": {
+            "tipo": "encontro",
+            "sinal": "cerracao-com-seguimento",
+            "manobra": "nenhuma"
+          },
+          "pose": "apito",
+          "tipo": "conceito",
+          "texto": "Com visibilidade restrita, a cada no máximo 2 minutos: 1 longo = propulsão mecânica com seguimento; 2 longos = propulsão mecânica parada, sem seguimento; 1 longo + 2 curtos = vela, pesca, sem governo, manobra restrita, restrita pelo calado, rebocando ou empurrando. Embarcação fundeada toca o sino rapidamente, por 5 segundos, a cada minuto.",
+          "titulo": "Apito na neblina",
+          "falaMarujo": "Na neblina, quem não enxerga escuta. Reduz a máquina e apura o ouvido!"
+        },
+        {
+          "id": "c-canal-estreito",
+          "cena": {
+            "tipo": "encontro",
+            "sinal": "ultrapassar-boreste",
+            "manobra": "nenhuma"
+          },
+          "pose": "apito",
+          "tipo": "conceito",
+          "texto": "Em canal estreito, navegue o mais próximo possível da margem que fica pelo seu BORESTE. Se a ultrapassagem exigir manobra de quem vai à frente, peça antes: 2 longos + 1 curto = vou passar por seu boreste; 2 longos + 2 curtos = vou passar por seu bombordo. Quem concorda responde longo, curto, longo, curto. Chegando a uma curva cega, dê 1 longo.",
+          "titulo": "Canal estreito",
+          "falaMarujo": "No canal é mão de boreste, que nem estrada!"
+        },
+        {
+          "id": "q-cer-1longo",
+          "som": "cerracao-com-seguimento",
+          "cena": {
+            "tipo": "encontro",
+            "sinal": "cerracao-com-seguimento",
+            "manobra": "nenhuma"
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Embarcação de propulsão mecânica com seguimento",
+            "Embarcação de propulsão mecânica parada",
+            "Veleiro navegando",
+            "Embarcação fundeada"
+          ],
+          "correta": 0,
+          "enunciado": "Neblina fechada. A cada 2 minutos, você ouve este apito vindo da cerração. Quem está lá?",
+          "explicacao": "1 apito longo a intervalos de até 2 minutos = propulsão mecânica com seguimento. Se ouvir o sinal aparentemente por ante a vante do seu través, reduza ao mínimo para manter o governo e, se preciso, pare.",
+          "referencia": "RIPEAM · Regras 19 e 35(a)"
+        },
+        {
+          "id": "q-cer-2longos",
+          "som": "cerracao-sem-seguimento",
+          "cena": {
+            "tipo": "encontro",
+            "sinal": "cerracao-sem-seguimento",
+            "manobra": "nenhuma"
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Propulsão mecânica parada, sem seguimento",
+            "Propulsão mecânica com seguimento",
+            "Pretendo ultrapassá-lo por boreste",
+            "Estou guinando para bombordo"
+          ],
+          "correta": 0,
+          "enunciado": "Na cerração, agora você ouve este sinal, repetido a cada 2 minutos. O que significa?",
+          "explicacao": "2 longos = propulsão mecânica parada, sem seguimento. Ela está ali, mas não está andando.",
+          "referencia": "RIPEAM · Regra 35(b)"
+        },
+        {
+          "id": "q-cer-restrita",
+          "som": "cerracao-restrita",
+          "cena": {
+            "tipo": "encontro",
+            "sinal": "cerracao-restrita",
+            "manobra": "nenhuma"
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Veleiro, pesqueiro, sem governo ou com manobra restrita",
+            "Lancha a motor com seguimento",
+            "Embarcação fundeada",
+            "Navio pedindo para ultrapassar"
+          ],
+          "correta": 0,
+          "enunciado": "Na neblina, este sinal se repete a cada 2 minutos. Quem pode estar emitindo?",
+          "explicacao": "1 longo + 2 curtos é o sinal de quem tem dificuldade para manobrar: vela, pesca, sem governo, manobra restrita, calado restrito ou rebocando.",
+          "referencia": "RIPEAM · Regra 35(c)"
+        },
+        {
+          "id": "q-ultrapassar-be",
+          "som": "ultrapassar-boreste",
+          "cena": {
+            "tipo": "encontro",
+            "sinal": "ultrapassar-boreste",
+            "manobra": "nenhuma"
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Ultrapassar você pelo seu boreste",
+            "Ultrapassar você pelo seu bombordo",
+            "Avisar que está dando máquinas atrás",
+            "Dizer que não entendeu sua manobra"
+          ],
+          "correta": 0,
+          "enunciado": "Num canal estreito, o navio que vem atrás de você dá este sinal. O que ele quer?",
+          "explicacao": "2 longos + 1 curto = pretendo ultrapassá-lo por seu boreste. Se concordar, responda longo, curto, longo, curto e facilite a passagem. Se tiver dúvida, dê pelo menos 5 apitos curtos e rápidos.",
+          "referencia": "RIPEAM · Regras 9(e) e 34(c)"
+        },
+        {
+          "id": "q-concordancia",
+          "som": "concordancia",
+          "cena": {
+            "tipo": "encontro",
+            "sinal": "concordancia",
+            "manobra": "nenhuma"
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Concordo com a ultrapassagem",
+            "Não concordo, fique atrás",
+            "Estou parado, sem seguimento",
+            "Estou me aproximando de uma curva"
+          ],
+          "correta": 0,
+          "enunciado": "Você pediu para ultrapassar no canal, e o navio da frente responde com este sinal. O que ele disse?",
+          "explicacao": "Longo, curto, longo, curto = de acordo. Mesmo com a concordância, quem ultrapassa continua responsável por passar com segurança.",
+          "referencia": "RIPEAM · Regras 9(e)(ii) e 34(c)"
+        },
+        {
+          "id": "q-curva",
+          "som": "curva",
+          "cena": {
+            "tipo": "encontro",
+            "sinal": "curva",
+            "manobra": "nenhuma"
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Tem embarcação chegando à curva: responda com 1 longo",
+            "Tem embarcação fundeada na curva",
+            "Pedem para você parar as máquinas",
+            "Sinal de socorro"
+          ],
+          "correta": 0,
+          "enunciado": "Navegando num rio com boa visibilidade, você ouve este apito vindo de trás de uma curva fechada, onde não dá para ver o outro lado. O que significa?",
+          "explicacao": "1 longo ao se aproximar de curva ou trecho sem visibilidade. Quem ouve do outro lado responde com 1 longo. Depois, navegue bem pela sua margem de boreste.",
+          "referencia": "RIPEAM · Regras 9(f) e 34(e)"
+        }
+      ],
+      "descricao": "Apitos na neblina, ultrapassagem e curva"
+    },
+    {
       "id": "balizamento-entrando",
       "temaId": "balizamento",
       "titulo": "Entrando no porto",
@@ -391,6 +801,342 @@
         }
       ],
       "descricao": "Boias laterais na Região B"
+    },
+    {
+      "id": "balizamento-cardinais",
+      "temaId": "balizamento",
+      "titulo": "Cardinais e outras marcas",
+      "cartoes": [
+        {
+          "id": "c-cardinais",
+          "tipo": "conceito",
+          "texto": "Pretas e amarelas, com tope de dois cones pretos. Elas dizem de que lado está a água boa: passe pelo lado do nome. Norte: cones com as pontas para cima. Sul: pontas para baixo. Leste: um para cima e outro para baixo, bases juntas, formando um losango. Oeste: pontas se encontrando no meio, como uma ampulheta. As pontas apontam para onde fica o preto: Norte preta em cima e amarela embaixo; Sul amarela em cima e preta embaixo; Leste preta com faixa amarela no meio; Oeste amarela com faixa preta no meio. À noite, luz branca: conte os lampejos como no relógio. Leste 3, Sul 6 (+1 longo), Oeste 9; Norte pisca sem parar.",
+          "titulo": "Marcas cardinais",
+          "falaMarujo": "Cardinal Norte? Passa pelo norte dela. Simples assim."
+        },
+        {
+          "id": "c-outras-marcas",
+          "pose": "ensinando",
+          "tipo": "conceito",
+          "texto": "Perigo isolado: preta com faixas vermelhas horizontais e tope de duas esferas pretas. Fica EM CIMA de um perigo pequeno, com água navegável em volta: dê distância. Águas seguras: faixas verticais vermelhas e brancas e tope de uma esfera vermelha. Água navegável em volta, comum na entrada de canal. Especial: amarela, com tope em X amarelo. Marca áreas como mergulho, esporte ou cabo submarino. Luzes: perigo isolado, branca com 2 lampejos; águas seguras, branca isofásica ou 1 lampejo longo; especial, amarela.",
+          "titulo": "Perigo isolado, águas seguras e especial"
+        },
+        {
+          "id": "q-card-norte",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Pelo norte dela",
+            "Pelo sul dela",
+            "Por qualquer lado, ela marca um naufrágio",
+            "Deixando-a por boreste, entrando no porto"
+          ],
+          "correta": 0,
+          "enunciado": "Você avista uma boia preta em cima e amarela embaixo, com dois cones pretos apontando para CIMA. Por onde passar?",
+          "explicacao": "Cones para cima = cardinal Norte. A água segura fica ao norte da marca: passe pelo norte.",
+          "referencia": "Balizamento IALA · Marcas cardinais"
+        },
+        {
+          "id": "q-card-oeste",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Cardinal Oeste: passe a oeste dela",
+            "Cardinal Leste: passe a leste dela",
+            "Perigo isolado",
+            "Águas seguras"
+          ],
+          "correta": 0,
+          "enunciado": "O tope tem dois cones pretos com as PONTAS se encontrando no meio, como uma ampulheta. Que marca é essa?",
+          "explicacao": "Pontas juntas no meio = cardinal Oeste. Já o losango (um cone para cima e outro para baixo, bases juntas) é a cardinal Leste.",
+          "referencia": "Balizamento IALA · Marcas cardinais"
+        },
+        {
+          "id": "q-card-lampejos",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Cardinal Leste",
+            "Cardinal Norte",
+            "Cardinal Sul",
+            "Cardinal Oeste"
+          ],
+          "correta": 0,
+          "enunciado": "À noite, uma luz branca dá 3 lampejos, apaga e repete. Que cardinal é essa?",
+          "explicacao": "Pense no relógio: 3 horas fica a leste. Sul são 6 lampejos mais 1 longo (6 horas), Oeste 9 (9 horas) e Norte pisca sem parar.",
+          "referencia": "Balizamento IALA · Marcas cardinais"
+        },
+        {
+          "id": "q-perigo-isolado",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Um perigo de pequena extensão onde ela está, com água navegável em volta",
+            "O meio do canal: passe colado nela",
+            "Área de mergulho",
+            "Que o canal acabou"
+          ],
+          "correta": 0,
+          "enunciado": "Boia preta com faixa vermelha horizontal e duas esferas pretas no tope. O que ela indica?",
+          "explicacao": "Perigo isolado: está sobre uma pedra, casco ou baixio de pequena extensão. Dá para passar por qualquer lado, mas mantendo boa distância.",
+          "referencia": "Balizamento IALA · Marca de perigo isolado"
+        },
+        {
+          "id": "q-aguas-seguras",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Águas seguras: água navegável em toda a volta",
+            "Perigo isolado: não se aproxime",
+            "Marca lateral de boreste",
+            "Cardinal Sul"
+          ],
+          "correta": 0,
+          "enunciado": "Boia com listras VERTICAIS vermelhas e brancas e uma esfera vermelha no tope. O que significa?",
+          "explicacao": "Águas seguras costuma marcar o início do canal ou o meio dele. Não indica perigo.",
+          "referencia": "Balizamento IALA · Marca de águas seguras"
+        },
+        {
+          "id": "q-especial",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Área especial, como mergulho, esporte ou cabo submarino",
+            "Perigo isolado",
+            "Lado de bombordo do canal",
+            "Marca lateral de boreste"
+          ],
+          "correta": 0,
+          "enunciado": "Uma boia AMARELA com um X amarelo no tope, perto da praia. O que ela marca?",
+          "explicacao": "A marca especial não é de navegação: ela avisa de uma área ou estrutura especial. Consulte a carta náutica para saber qual é.",
+          "referencia": "Balizamento IALA · Marcas especiais"
+        },
+        {
+          "id": "q-verde-saindo",
+          "cena": {
+            "tipo": "canal",
+            "oculto": true,
+            "sentido": "saindo"
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Por boreste",
+            "Por bombordo",
+            "Tanto faz",
+            "Passando entre duas verdes"
+          ],
+          "correta": 0,
+          "enunciado": "Você está SAINDO do porto para o mar, na Região B. Por qual bordo deixa as boias VERDES?",
+          "explicacao": "Entrando, verde fica por bombordo. Saindo, tudo se inverte: verde por boreste e vermelha por bombordo.",
+          "referencia": "Balizamento IALA · Região B"
+        }
+      ],
+      "descricao": "Cardinais, perigo isolado, águas seguras e especial"
+    },
+    {
+      "id": "governo-quem-da-passagem",
+      "temaId": "governo",
+      "titulo": "Quem dá passagem?",
+      "cartoes": [
+        {
+          "id": "c-roda-a-roda",
+          "cena": {
+            "tipo": "encontro",
+            "sinal": "guinando-boreste",
+            "manobra": "boreste",
+            "vocePara": "boreste"
+          },
+          "tipo": "conceito",
+          "texto": "Duas embarcações de propulsão mecânica em rumos opostos ou quase opostos, com risco de abalroamento: as DUAS guinam para boreste e passam bombordo com bombordo. À noite, é quando você vê as luzes de mastro da outra em linha (ou quase) e as duas luzes de bordo, vermelha e verde.",
+          "titulo": "Roda a roda",
+          "falaMarujo": "De frente? Os dois pra boreste e ninguém se arranha."
+        },
+        {
+          "id": "c-rumos-cruzados",
+          "cena": {
+            "tipo": "luzes-noite",
+            "aspecto": 290,
+            "embarcacao": {
+              "tipo": "propulsao-mecanica"
+            }
+          },
+          "tipo": "conceito",
+          "texto": "Quando duas embarcações de propulsão mecânica cruzam os rumos com risco de abalroamento, quem vê a outra pelo SEU BORESTE é quem manobra e, se possível, evita cruzar pela proa dela. À noite, isso é ver a luz VERMELHA dela. A outra mantém rumo e velocidade. Se perceber que você não está manobrando, ela PODE manobrar sozinha; quando a colisão não puder mais ser evitada só pela sua manobra, ela É OBRIGADA a agir.",
+          "titulo": "Rumos cruzados",
+          "falaMarujo": "Viu vermelho? É você quem manobra!"
+        },
+        {
+          "id": "c-preferencias",
+          "pose": "ensinando",
+          "tipo": "conceito",
+          "texto": "Quem ULTRAPASSA sempre se mantém fora do caminho de quem é ultrapassado, seja a vela ou a motor. Fora isso, a lancha a motor dá caminho a: sem governo, manobra restrita, pesca e veleiro. O veleiro dá caminho a: sem governo, manobra restrita e pesca. O pesqueiro dá caminho a sem governo e manobra restrita. \"Pesca\" aqui é só quem está com rede ou aparelho que restringe a manobra: corrico não conta. Em canal estreito, embarcação com menos de 20 m, veleiro ou pesqueiro não deve atrapalhar quem só pode navegar com segurança ali.",
+          "titulo": "Quem tem preferência"
+        },
+        {
+          "id": "q-roda-a-roda",
+          "cena": {
+            "tipo": "encontro",
+            "sinal": "guinando-boreste",
+            "manobra": "boreste",
+            "vocePara": "boreste"
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "As duas guinam para boreste",
+            "As duas guinam para bombordo",
+            "A menor para e a maior segue",
+            "Cada uma guina para o lado que preferir"
+          ],
+          "correta": 0,
+          "enunciado": "Você está de lancha e um navio a motor vem exatamente pela sua proa, em rumo oposto ao seu. O que as duas embarcações devem fazer?",
+          "explicacao": "Roda a roda: ambas guinam para boreste e passam bombordo com bombordo, avisando com 1 apito curto.",
+          "referencia": "RIPEAM · Regra 14"
+        },
+        {
+          "id": "q-cruzado-luz",
+          "cena": {
+            "tipo": "luzes-noite",
+            "aspecto": 290,
+            "embarcacao": {
+              "tipo": "propulsao-mecanica"
+            }
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Você: ela está pelo seu boreste",
+            "Ela: você está pelo boreste dela",
+            "Quem for mais rápido",
+            "Ninguém: os dois mantêm o rumo"
+          ],
+          "correta": 0,
+          "enunciado": "Você está de lancha. Seus rumos se cruzam e, à noite, você vê a luz branca e a VERMELHA de uma lancha a motor. Quem manobra?",
+          "explicacao": "Ver a vermelha dela significa que ela está cruzando pelo seu boreste. Você dá passagem, de preferência guinando para boreste e passando pela popa dela.",
+          "referencia": "RIPEAM · Regras 15 e 16"
+        },
+        {
+          "id": "q-ultrapassagem",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Você, que está ultrapassando",
+            "O veleiro, porque é mais lento",
+            "O veleiro, se estiver com o motor ligado",
+            "Ninguém, até ficarem lado a lado"
+          ],
+          "correta": 0,
+          "enunciado": "Sua lancha é mais rápida e vai passar um veleiro que segue à sua frente, no mesmo rumo. Quem deve se manter fora do caminho?",
+          "explicacao": "Quem ultrapassa se mantém fora do caminho de quem é ultrapassado, até ficar safo e bem afastado, seja quem for.",
+          "referencia": "RIPEAM · Regra 13"
+        },
+        {
+          "id": "q-lancha-veleiro",
+          "cena": {
+            "tipo": "luzes-noite",
+            "aspecto": 0,
+            "embarcacao": {
+              "tipo": "vela"
+            }
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "A sua lancha",
+            "O veleiro",
+            "Os dois guinam para boreste, como em roda a roda",
+            "Quem for maior"
+          ],
+          "correta": 0,
+          "enunciado": "À noite, você vê vermelha e verde juntas sem nenhuma luz branca acima: um veleiro vindo de proa. Você está de lancha. Quem dá passagem?",
+          "explicacao": "A lancha a motor se mantém fora do caminho do veleiro (a não ser que esteja sendo ultrapassada por ele). O roda a roda da Regra 14 vale só entre duas de propulsão mecânica.",
+          "referencia": "RIPEAM · Regra 18(a)"
+        },
+        {
+          "id": "q-mantem-rumo",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Mantém rumo e velocidade, vigiando; se a outra não manobrar, age para evitar a colisão",
+            "Acelera para passar logo pela proa da outra",
+            "Para as máquinas para garantir",
+            "Guina para bombordo para facilitar"
+          ],
+          "correta": 0,
+          "enunciado": "Numa situação de rumos cruzados, a preferência é sua. O que você faz?",
+          "explicacao": "Quem tem a preferência mantém rumo e velocidade, para a outra poder calcular a manobra. Mas ter preferência não dá direito de bater: se a outra não age, você age. Evite guinar para bombordo com a outra pelo seu bombordo.",
+          "referencia": "RIPEAM · Regra 17"
+        }
+      ],
+      "descricao": "Roda a roda, rumos cruzados, ultrapassagem e preferências"
+    },
+    {
+      "id": "governo-risco-veleiros",
+      "temaId": "governo",
+      "titulo": "Risco de colisão e veleiros",
+      "cartoes": [
+        {
+          "id": "c-risco-colisao",
+          "pose": "ensinando",
+          "tipo": "conceito",
+          "texto": "Se a marcação (a direção em que você vê a outra embarcação) não muda de forma apreciável e a distância diminui, há risco de colisão. Mesmo com a marcação mudando pode haver risco, com navio grande, reboque ou embarcação muito perto. Na dúvida, considere que há risco. Ao manobrar, faça uma manobra AMPLA, em tempo e bem visível para o outro. Várias pequenas mudanças de rumo confundem.",
+          "titulo": "Marcação constante = perigo",
+          "falaMarujo": "Se ela não anda no seu para-brisa e só cresce, vai bater!"
+        },
+        {
+          "id": "c-veleiros",
+          "pose": "ensinando",
+          "tipo": "conceito",
+          "texto": "Com risco de colisão entre dois veleiros: com o vento de bordos diferentes, quem recebe o vento por BOMBORDO dá passagem. Com o vento pelo mesmo bordo, quem está a BARLAVENTO (do lado de onde vem o vento) dá passagem a quem está a sotavento. Recebendo o vento por bombordo e sem saber por qual bordo o veleiro a barlavento recebe o dele, dê passagem. E quem ultrapassa sempre dá passagem, mesmo entre veleiros.",
+          "titulo": "Veleiro com veleiro"
+        },
+        {
+          "id": "q-marcacao",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Risco de colisão",
+            "Que ela vai passar pela sua popa",
+            "Que ela está fundeada",
+            "Nada, enquanto ela estiver longe"
+          ],
+          "correta": 0,
+          "enunciado": "Você mantém o rumo e uma lancha cruzando continua sempre na mesma direção em relação a você e cada vez maior. O que isso indica?",
+          "explicacao": "Marcação que não varia com a distância diminuindo é o sinal clássico de risco de colisão. Aja cedo.",
+          "referencia": "RIPEAM · Regra 7"
+        },
+        {
+          "id": "q-manobra-ampla",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Uma mudança ampla, feita com antecedência e bem visível",
+            "Várias pequenas correções de rumo",
+            "Esperar até o último momento para ver o que ela faz",
+            "Acelerar e passar pela proa dela"
+          ],
+          "correta": 0,
+          "enunciado": "Você precisa desviar de outra embarcação. Qual é a manobra certa?",
+          "explicacao": "A manobra deve ser positiva, feita a tempo e grande o bastante para o outro perceber. Pequenas mudanças sucessivas não são notadas.",
+          "referencia": "RIPEAM · Regra 8"
+        },
+        {
+          "id": "q-veleiros-bordos",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "O seu, que recebe o vento por bombordo",
+            "O outro, que recebe o vento por boreste",
+            "O que estiver mais rápido",
+            "Os dois guinam para boreste"
+          ],
+          "correta": 0,
+          "enunciado": "Dois veleiros se aproximam com risco de colisão, nenhum ultrapassando o outro: o seu recebe o vento por BOMBORDO e o outro por boreste. Quem dá passagem?",
+          "explicacao": "Vento de bordos diferentes: quem o recebe por bombordo se mantém fora do caminho do outro.",
+          "referencia": "RIPEAM · Regra 12(a)(i)"
+        },
+        {
+          "id": "q-veleiros-barlavento",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Você, que está a barlavento",
+            "O outro, que está a sotavento",
+            "Quem for maior",
+            "Ninguém: os dois mantêm o rumo"
+          ],
+          "correta": 0,
+          "enunciado": "Dois veleiros se aproximam com risco de colisão, nenhum ultrapassando o outro, e recebem o vento pelo MESMO bordo. Você está a barlavento do outro. Quem dá passagem?",
+          "explicacao": "Mesmo bordo: quem está a barlavento se mantém fora do caminho de quem está a sotavento.",
+          "referencia": "RIPEAM · Regra 12(a)(ii)"
+        }
+      ],
+      "descricao": "Marcação constante, manobra clara e veleiro com veleiro"
     },
     {
       "id": "nos-arremate-emendas",
@@ -503,7 +1249,7 @@
             "Volta de cunho"
           ],
           "correta": 0,
-          "enunciado": "Para o cabo não escapar do moitão (roldana), que nó você dá no chicote?",
+          "enunciado": "Para o cabo não escapar do moitão (o bloco com roldana), que nó você dá no chicote?",
           "explicacao": "O nó de oito é o arremate clássico: segura bem e desfaz fácil, mesmo depois de apertado.",
           "referencia": "Marinharia · nós de arremate"
         },
@@ -564,7 +1310,7 @@
           },
           "pose": "ensinando",
           "tipo": "conceito",
-          "texto": "Amarra o cabo no cunho do cais ou da embarcação: uma volta redonda, cotes em \"oito\" e um cote mordido para travar.",
+          "texto": "Amarra o cabo no cunho do cais ou da embarcação: uma volta redonda, voltas cruzadas em \"oito\" e um cote mordido para travar.",
           "titulo": "Volta de cunho",
           "falaMarujo": "Comece sempre pela orelha mais distante de onde vem a força."
         },
@@ -663,6 +1409,368 @@
         }
       ],
       "descricao": "Lais de guia, volta do fiel e volta de cunho"
+    },
+    {
+      "id": "nos-na-pratica",
+      "temaId": "marinharia",
+      "titulo": "Nós III: na prática",
+      "cartoes": [
+        {
+          "id": "c-no-certo",
+          "pose": "ensinando",
+          "tipo": "conceito",
+          "texto": "Nó bom é o que segura quando precisa e desata quando você quer. Antes de dar o nó, pergunte: vou emendar dois cabos? Fazer uma alça? Prender num poste, num balaústre ou no cunho? A resposta escolhe o nó.",
+          "titulo": "O nó certo na hora certa",
+          "falaMarujo": "Quem não sabe dar nó dá muito nó. Bora treinar a situação!"
+        },
+        {
+          "id": "q-sit-reboque",
+          "cena": {
+            "no": "escota",
+            "tipo": "no",
+            "oculto": true
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Nó de escota",
+            "Nó direito",
+            "Nó de oito",
+            "Volta do fiel"
+          ],
+          "correta": 0,
+          "enunciado": "Você vai rebocar um caiaque: o cabo da lancha é grosso e o do caiaque é fino. Como emendar os dois?",
+          "explicacao": "Bitolas diferentes pedem o nó de escota: o grosso faz o seio e o fino passa por ele. O nó direito correria.",
+          "referencia": "Marinharia · Nós de emenda"
+        },
+        {
+          "id": "q-sit-cabeco",
+          "cena": {
+            "no": "lais-de-guia",
+            "tipo": "no",
+            "oculto": true
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Lais de guia",
+            "Nó direito",
+            "Volta de cunho",
+            "Nó de escota"
+          ],
+          "correta": 0,
+          "enunciado": "Chegando ao cais, você quer jogar uma alça já pronta no cabeço (poste) para prender a lancha. Que nó faz essa alça?",
+          "explicacao": "O lais de guia faz uma alça fixa que não corre nem aperta, e desata fácil depois de ter feito força.",
+          "referencia": "Marinharia · Alças"
+        },
+        {
+          "id": "q-sit-defensa",
+          "cena": {
+            "no": "volta-do-fiel",
+            "tipo": "no",
+            "oculto": true
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Volta do fiel",
+            "Volta de cunho",
+            "Lais de guia",
+            "Nó de escota"
+          ],
+          "correta": 0,
+          "enunciado": "Você precisa ajustar rápido a altura das defensas no balaústre antes de encostar. Que volta usar?",
+          "explicacao": "A volta do fiel é rápida de dar e fácil de ajustar. Confira de vez em quando: ela pode correr se o esforço mudar de lado.",
+          "referencia": "Marinharia · Voltas"
+        },
+        {
+          "id": "q-sit-cunho",
+          "cena": {
+            "no": "volta-de-cunho",
+            "tipo": "no",
+            "oculto": true
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Volta redonda, voltas cruzadas em oito e um cote mordido",
+            "Um nó de oito no meio do cabo",
+            "Um nó direito em volta do cunho",
+            "Várias voltas redondas, sem cotes"
+          ],
+          "correta": 0,
+          "enunciado": "A lancha já está encostada e você vai prender o cabo de amarração no cunho do píer. Como fazer?",
+          "explicacao": "Volta de cunho: uma volta redonda pela orelha mais distante, voltas cruzadas em oito e um cote mordido para travar. Segura bem e solta rápido.",
+          "referencia": "Marinharia · Volta de cunho"
+        },
+        {
+          "id": "q-sit-moitao",
+          "cena": {
+            "no": "oito",
+            "tipo": "no",
+            "oculto": true
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Nó de oito",
+            "Lais de guia",
+            "Volta do fiel",
+            "Nó direito"
+          ],
+          "correta": 0,
+          "enunciado": "A escota passa por um moitão e, se escapar, a vela fica solta. Que nó dar no chicote (a ponta) da escota?",
+          "explicacao": "O nó de oito faz um \"calombo\" no chicote que não passa pelo moitão e é fácil de desfazer.",
+          "referencia": "Marinharia · Nós de arremate"
+        },
+        {
+          "id": "q-sit-rizar",
+          "cena": {
+            "no": "direito",
+            "tipo": "no",
+            "oculto": true
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Nó direito",
+            "Nó de escota",
+            "Volta de cunho",
+            "Nó de oito"
+          ],
+          "correta": 0,
+          "enunciado": "Ventou forte e você vai rizar a vela, amarrando o pano em volta da retranca com os dois chicotes do mesmo cabinho. Qual nó?",
+          "explicacao": "Os rizes se amarram com nó direito: plano, une pontas de mesma bitola e se desfaz fácil na hora de soltar o rizo. Só não serve para emenda de muito esforço.",
+          "referencia": "Marinharia · Nó direito"
+        },
+        {
+          "id": "q-sit-errado",
+          "cena": {
+            "no": "direito",
+            "tipo": "no",
+            "oculto": true
+          },
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Nó direito",
+            "Nó de escota",
+            "Nó de escota dobrada"
+          ],
+          "correta": 0,
+          "enunciado": "Para emendar dois cabos de grossuras BEM diferentes que vão aguentar muito esforço, qual nó NÃO usar?",
+          "explicacao": "Com bitolas diferentes, o nó direito desliza e pode se desfazer sob esforço. O certo é o nó de escota, ou escota dobrada para mais segurança.",
+          "referencia": "Marinharia · Nós de emenda"
+        }
+      ],
+      "descricao": "Qual nó usar em cada situação a bordo"
+    },
+    {
+      "id": "salvatagem-seguranca",
+      "temaId": "salvatagem",
+      "titulo": "Segurança a bordo",
+      "cartoes": [
+        {
+          "id": "c-coletes",
+          "tipo": "conceito",
+          "texto": "Tem que haver um colete salva-vidas aprovado para cada pessoa a bordo, do tamanho certo e em lugar de fácil acesso, nunca trancado no paiol. Por segurança, crianças e quem não sabe nadar devem navegar vestindo o colete. Na moto aquática, o colete vestido é obrigatório. A boia circular com retinida fica pronta para ser jogada.",
+          "titulo": "Colete para todos",
+          "falaMarujo": "Colete no paiol não salva ninguém. Deixa à mão!"
+        },
+        {
+          "id": "c-extintores",
+          "pose": "ensinando",
+          "tipo": "conceito",
+          "texto": "Classe A: sólidos que deixam brasa (madeira, papel, tecido). Água e espuma servem. Classe B: líquidos inflamáveis (gasolina, diesel, óleo). Use pó químico, CO2 ou espuma, nunca jato de água. Classe C: equipamento elétrico ligado. Use CO2 ou pó químico, nunca água, e corte a energia. O pó químico ABC serve nas três classes.",
+          "titulo": "Cada fogo, seu extintor"
+        },
+        {
+          "id": "c-homem-ao-mar",
+          "pose": "apito",
+          "tipo": "conceito",
+          "texto": "1) Grite \"homem ao mar por boreste\" (ou bombordo). 2) Jogue a boia na hora. 3) Alguém aponta para a pessoa e não tira os olhos dela. 4) Afaste o hélice: guine para o bordo da queda e ponha a máquina em neutro perto da pessoa. 5) Volte e aproxime-se devagar por sotavento, aproado ao vento. Junto da pessoa, desligue o motor e recolha pelo bordo. Nunca pela popa com o motor ligado.",
+          "titulo": "Homem ao mar!",
+          "falaMarujo": "Quem aponta não pisca. Perdeu de vista no mar, é difícil achar de novo."
+        },
+        {
+          "id": "c-socorro",
+          "pose": "ensinando",
+          "tipo": "conceito",
+          "texto": "No VHF, o canal 16 é o de socorro, urgência, segurança e chamada. Cada palavra é dita 3 vezes. MAYDAY = perigo grave e iminente à vida ou à embarcação. PAN-PAN = urgência, sem perigo imediato. SECURITÉ = aviso de segurança à navegação ou de tempo. Pirotécnicos: o fumígeno laranja é para o dia; o foguete com paraquedas vermelho é visto de longe, principalmente à noite; o facho manual vermelho mostra sua posição a quem já está perto. Rádio com DSC tem o botão vermelho de socorro, que manda sua identificação (MMSI) e, se estiver ligado ao GPS, sua posição. Por telefone, o Salvamar é o 185.",
+          "titulo": "Pedindo socorro"
+        },
+        {
+          "id": "q-extintor-b",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Pó químico ou CO2",
+            "Água em jato",
+            "Um balde de água do mar",
+            "Qualquer um serve"
+          ],
+          "correta": 0,
+          "enunciado": "Pegou fogo no combustível derramado perto do motor. Qual extintor usar?",
+          "explicacao": "Combustível é fogo classe B. Água em jato espalha o líquido em chamas. Use pó químico, CO2 ou espuma, e corte a alimentação de combustível se puder.",
+          "referencia": "Combate a incêndio · Classes de fogo"
+        },
+        {
+          "id": "q-extintor-c",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Cortar a energia e usar extintor de CO2 ou pó químico",
+            "Jogar água para resfriar rápido",
+            "Abrir o painel para ventilar",
+            "Usar extintor de água pressurizada"
+          ],
+          "correta": 0,
+          "enunciado": "Sai fumaça e fogo do painel elétrico ligado. O que fazer?",
+          "explicacao": "Equipamento elétrico energizado é classe C: água conduz eletricidade e pode dar choque. Corte a energia e use CO2 ou pó químico.",
+          "referencia": "Combate a incêndio · Classes de fogo"
+        },
+        {
+          "id": "q-hom-primeiro",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Dar o alarme, jogar a boia e manter alguém apontando",
+            "Pular na água para ajudar",
+            "Parar o motor e esperar a pessoa nadar até a lancha",
+            "Dar máquinas atrás na direção da pessoa"
+          ],
+          "correta": 0,
+          "enunciado": "Alguém caiu pelo bordo de boreste da sua lancha. Qual é a primeira coisa a fazer?",
+          "explicacao": "Alarme, boia e um apontador. Pular na água costuma virar duas vítimas. Dar ré na direção da pessoa a coloca perto do hélice.",
+          "referencia": "Salvatagem · Homem ao mar"
+        },
+        {
+          "id": "q-hom-helice",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Para boreste, o bordo da queda, afastando a popa e o hélice da pessoa",
+            "Para bombordo, para se afastar da pessoa",
+            "Seguir em frente e voltar depois",
+            "Dar ré imediatamente"
+          ],
+          "correta": 0,
+          "enunciado": "A pessoa caiu por boreste. Para onde guinar logo em seguida?",
+          "explicacao": "Guinando para o bordo da queda, a popa (e o hélice) se afasta da pessoa. Perto dela, máquina em neutro.",
+          "referencia": "Salvatagem · Homem ao mar"
+        },
+        {
+          "id": "q-vhf",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Canal 16",
+            "Canal 9",
+            "Canal 68",
+            "Canal 72"
+          ],
+          "correta": 0,
+          "enunciado": "Em qual canal do VHF marítimo você pede socorro?",
+          "explicacao": "O canal 16 é escutado pela Marinha e pelas embarcações: é o canal de socorro, urgência, segurança e chamada.",
+          "referencia": "Comunicações · VHF marítimo"
+        },
+        {
+          "id": "q-panpan",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "PAN-PAN: urgência, sem perigo imediato",
+            "MAYDAY: perigo grave e iminente",
+            "Só esperar alguém passar",
+            "SECURITÉ: aviso de segurança à navegação"
+          ],
+          "correta": 0,
+          "enunciado": "O motor pifou em mar calmo, longe das pedras, e você precisa de um reboque. Como chamar no rádio?",
+          "explicacao": "Sem perigo imediato à vida, é urgência: PAN-PAN. MAYDAY fica para perigo grave e iminente, como naufrágio, incêndio fora de controle ou alguém correndo risco de vida.",
+          "referencia": "Comunicações · Socorro e urgência"
+        },
+        {
+          "id": "q-pirotecnico-dia",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Fumígeno laranja",
+            "Foguete com paraquedas vermelho",
+            "Facho manual vermelho",
+            "Apito"
+          ],
+          "correta": 0,
+          "enunciado": "Em pleno dia, você vê um avião de busca ao longe. Qual sinal pirotécnico usar?",
+          "explicacao": "De dia, a fumaça laranja se destaca contra o mar e é vista de longe. Acenda o fumígeno a sotavento da embarcação. Foguete e facho vermelho funcionam melhor à noite.",
+          "referencia": "Salvatagem · Sinais pirotécnicos"
+        }
+      ],
+      "descricao": "Coletes, extintores, homem ao mar e pedido de socorro"
+    },
+    {
+      "id": "salvatagem-prevencao",
+      "temaId": "salvatagem",
+      "titulo": "Prevenção e água fria",
+      "cartoes": [
+        {
+          "id": "c-triangulo-fogo",
+          "pose": "ensinando",
+          "tipo": "conceito",
+          "texto": "Fogo precisa de combustível, oxigênio e calor. Tire um deles e ele apaga. Na lancha a gasolina, uma das principais causas de incêndio e explosão é o vapor de combustível: abasteça com o motor desligado, sem passageiros a bordo, sem fumar e com as escotilhas fechadas. Depois ventile o compartimento do motor antes de dar a partida.",
+          "titulo": "Triângulo do fogo",
+          "falaMarujo": "Cheirou gasolina no porão? Ventila. Se o cheiro não sai, não gira a chave: procura o vazamento!"
+        },
+        {
+          "id": "c-agua-fria",
+          "pose": "ensinando",
+          "tipo": "conceito",
+          "texto": "Na água, o corpo perde calor muito rápido (hipotermia). Com colete, não nade à toa: fique encolhido, com os joelhos junto ao peito (posição HELP), ou em grupo, abraçados. Mantenha a roupa. Só abandone a embarcação em último caso: ela é mais fácil de achar que uma pessoa sozinha. Se der, suba na embarcação, mesmo virada: fora da água você perde muito menos calor.",
+          "titulo": "Na água, poupe calor"
+        },
+        {
+          "id": "q-triangulo",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Combustível, oxigênio e calor",
+            "Combustível, água e faísca",
+            "Calor, fumaça e oxigênio",
+            "Gasolina, óleo e eletricidade"
+          ],
+          "correta": 0,
+          "enunciado": "Quais são os três elementos do triângulo do fogo?",
+          "explicacao": "Sem um dos três o fogo não existe: o extintor age abafando (oxigênio), resfriando (calor) ou isolando o combustível. Alguns livros falam em tetraedro, somando a reação em cadeia, que o pó químico interrompe.",
+          "referencia": "Combate a incêndio · Triângulo do fogo"
+        },
+        {
+          "id": "q-abastecer",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Motor desligado, passageiros fora e ventilar o motor antes da partida",
+            "Motor ligado para não perder tempo",
+            "Passageiros a bordo segurando a mangueira",
+            "Motor desligado, mas dar a partida logo após fechar o tanque"
+          ],
+          "correta": 0,
+          "enunciado": "Hora de abastecer a lancha no posto. Qual é o procedimento certo?",
+          "explicacao": "Vapor de gasolina é mais pesado que o ar e se acumula no porão. Uma faísca na partida pode causar explosão.",
+          "referencia": "Segurança · Abastecimento"
+        },
+        {
+          "id": "q-hipotermia",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Ficar encolhido, joelhos no peito, sem nadar à toa",
+            "Nadar sem parar para se aquecer",
+            "Tirar a roupa para nadar mais leve",
+            "Tirar o colete para nadar melhor"
+          ],
+          "correta": 0,
+          "enunciado": "Você caiu na água fria, de colete, e o resgate vai demorar. O que fazer?",
+          "explicacao": "Nadar gasta energia e aumenta a perda de calor. Encolhido (posição HELP) ou abraçado ao grupo, você aguenta mais tempo.",
+          "referencia": "Sobrevivência · Hipotermia"
+        },
+        {
+          "id": "q-abandono",
+          "tipo": "multipla-escolha",
+          "opcoes": [
+            "Só em último caso: a embarcação é mais fácil de achar",
+            "Imediatamente, antes de pedir socorro",
+            "Assim que entrar a primeira água",
+            "Quando a bateria acabar"
+          ],
+          "correta": 0,
+          "enunciado": "A lancha está com água a bordo, mas ainda flutua. Quando abandonar?",
+          "explicacao": "Enquanto flutuar, fique nela ou agarrado a ela: vista o colete, peça socorro e use os pirotécnicos. Abandone só se afundar ou com fogo fora de controle. Se virar e continuar flutuando, suba no casco.",
+          "referencia": "Sobrevivência · Abandono"
+        }
+      ],
+      "descricao": "Triângulo do fogo, abastecimento, hipotermia e abandono"
     }
   ]
 }

@@ -31,8 +31,8 @@ describe('conteúdo atual', () => {
   it('questão com som mostra a cena do encontro com o mesmo sinal', () => {
     for (const c of CONTEUDO.licoes.flatMap((l) => l.cartoes)) {
       if (c.tipo !== 'multipla-escolha' || !c.som) continue;
-      expect(c.cena.tipo, c.id).toBe('encontro');
-      if (c.cena.tipo === 'encontro') expect(c.cena.sinal, c.id).toBe(c.som);
+      expect(c.cena?.tipo, c.id).toBe('encontro');
+      if (c.cena?.tipo === 'encontro') expect(c.cena.sinal, c.id).toBe(c.som);
     }
   });
 });

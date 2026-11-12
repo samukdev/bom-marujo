@@ -20,7 +20,11 @@ export default function CadernoDeNos() {
             <div style={{ padding: '12px 16px 16px' }}>
               <h2 style={{ margin: 0, fontSize: 20, fontWeight: 900 }}>{NOS[id].nome}</h2>
               <p style={{ margin: '4px 0 0', lineHeight: 1.45 }}>{USOS_NOS[id].uso}</p>
-              {USOS_NOS[id].dica && <p style={{ margin: '6px 0 0', fontSize: 14, color: 'var(--texto-2)' }}>💡 {USOS_NOS[id].dica}</p>}
+              <h3 style={{ margin: '12px 0 4px', fontSize: 14, fontWeight: 900, textTransform: 'uppercase', letterSpacing: 0.5, color: 'var(--azul)' }}>Quando usar</h3>
+              <ul style={{ margin: 0, paddingLeft: 20, display: 'grid', gap: 4, lineHeight: 1.4 }}>
+                {USOS_NOS[id].situacoes.map((s) => <li key={s}>{s}</li>)}
+              </ul>
+              {USOS_NOS[id].dica && <p style={{ margin: '10px 0 0', fontSize: 14, color: 'var(--texto-2)' }}>💡 {USOS_NOS[id].dica}</p>}
             </div>
           </section>
         ))}
