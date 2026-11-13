@@ -16,7 +16,9 @@ export const conceito: TipoInformativo<C> = {
   Tela: ({ cartao: c, chave }) => (
     <>
       <h1 className={s.titulo}>{c.titulo}</h1>
-      {c.cena && <CenaInterativa key={`${c.id}-${chave}`} spec={c.cena} revelado />}
+      {c.cena && (
+        <CenaInterativa key={`${c.id}-${chave}`} spec={c.cena} revelado som={c.cena.tipo === 'encontro' ? c.cena.sinal : undefined} />
+      )}
       <p className={s.texto}>{c.texto}</p>
       {c.falaMarujo && (
         <div className={s.marujo}>

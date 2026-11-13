@@ -11,7 +11,7 @@
 
 .tag { font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--azul); }
 .titulo { font-size: 22px; font-weight: 900; margin: 6px 0 14px; line-height: 1.25; }
-.texto { font-size: 17px; line-height: 1.5; margin: 0 0 16px; }
+.texto { font-size: 17px; line-height: 1.5; margin: 0 0 16px; white-space: pre-line; }
 
 .cena {
   border: 3px solid var(--tinta); border-radius: 20px; overflow: hidden; background: #000;

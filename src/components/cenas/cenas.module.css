@@ -67,3 +67,10 @@
   .revelar { transform: none; }
   .fumaca circle { opacity: 0.9; }
 }
+
+/* legenda do sinal sonoro: • curto, — longo (proporcional à duração); acende o apito que está tocando */
+.codigo { margin-right: auto; display: flex; align-items: center; gap: 6px; }
+.curto, .longo { display: block; height: 12px; border-radius: 99px; background: var(--texto-2); transition: background 0.15s, transform 0.15s; }
+.curto { width: 12px; }
+.longo { width: 44px; }
+.tocando { background: var(--azul); transform: scale(1.15); }

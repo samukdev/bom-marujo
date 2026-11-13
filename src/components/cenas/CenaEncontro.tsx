@@ -105,7 +105,7 @@ export function CenaEncontro({
         </g>
       )}
 
-      {revelado ? <Placa>{`${notacao(def.sinal)}  =  ${def.significado}`}</Placa> : <Placa>Vista de cima</Placa>}
+      {revelado ? <Placa>{`${notacao(def.sinal)}  =  ${def.rotulo}`}</Placa> : <Placa>Vista de cima</Placa>}
     </svg>
   );
 }

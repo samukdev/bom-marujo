@@ -107,13 +107,24 @@ export function Rotulo({
 
 /** Plaquinha de contexto/notação: pílula de tinta a 85%, canto superior esquerdo. */
 export function Placa({ children }: { children: string }) {
-  // ~8,6 por caractere em 12u peso 900 caixa alta (bolinhas e espaços contam menos)
-  const largura = Math.min(376, [...children].reduce((t, c) => t + (c === ' ' ? 4 : c === '•' ? 6 : 8.6), 0) + 22);
+  // ~8,6 por caractere em 12u peso 900 caixa alta (bolinhas e espaços contam menos); acima de 376 quebra em 2 linhas
+  const medir = (t: string) => [...t].reduce((w, c) => w + (c === ' ' ? 4 : c === '•' ? 6 : 8.6), 0) + 22;
+  const texto = children.toUpperCase();
+  let linhas = [texto];
+  if (medir(texto) > 376) {
+    const palavras = texto.split(' ');
+    let i = palavras.length - 1;
+    while (i > 1 && medir(palavras.slice(0, i).join(' ')) > 376) i--;
+    linhas = [palavras.slice(0, i).join(' '), palavras.slice(i).join(' ')];
+  }
+  const largura = Math.min(376, Math.max(...linhas.map(medir)));
   return (
     <g>
-      <rect x={12} y={10} width={largura} height={22} rx={11} fill={INK} opacity={0.85} />
+      <rect x={12} y={10} width={largura} height={8 + 14 * linhas.length} rx={11} fill={INK} opacity={0.85} />
       <text x={23} y={25} fontWeight={900} fontSize={12} fill="#fff" letterSpacing={0.4} style={{ fontFamily: 'var(--fonte)' }}>
-        {children.toUpperCase()}
+        {linhas.map((l, i) => (
+          <tspan key={i} x={23} dy={i ? 14 : 0}>{l}</tspan>
+        ))}
       </text>
     </g>
   );

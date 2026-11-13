@@ -27,22 +27,24 @@ export type SinalId =
 export interface SinalDef {
   id: SinalId;
   sinal: SinalSonoro;
+  /** curto, para a placa da cena */
+  rotulo: string;
   significado: string;
   regra: string;
 }
 
 export const SINAIS: Record<SinalId, SinalDef> = {
-  'guinando-boreste': { id: 'guinando-boreste', sinal: [c], significado: 'Estou guinando para boreste', regra: 'RIPEAM Regra 34(a)' },
-  'guinando-bombordo': { id: 'guinando-bombordo', sinal: [c, c], significado: 'Estou guinando para bombordo', regra: 'RIPEAM Regra 34(a)' },
-  'maquinas-atras': { id: 'maquinas-atras', sinal: [c, c, c], significado: 'Estou dando máquinas atrás', regra: 'RIPEAM Regra 34(a)' },
-  duvida: { id: 'duvida', sinal: [c, c, c, c, c], significado: 'Não entendi suas intenções / dúvida', regra: 'RIPEAM Regra 34(d)' },
-  'ultrapassar-boreste': { id: 'ultrapassar-boreste', sinal: [l, l, c], significado: 'Pretendo ultrapassá-lo por seu boreste (canal estreito)', regra: 'RIPEAM Regra 34(c)' },
-  'ultrapassar-bombordo': { id: 'ultrapassar-bombordo', sinal: [l, l, c, c], significado: 'Pretendo ultrapassá-lo por seu bombordo (canal estreito)', regra: 'RIPEAM Regra 34(c)' },
-  concordancia: { id: 'concordancia', sinal: [l, c, l, c], significado: 'De acordo com a ultrapassagem', regra: 'RIPEAM Regra 34(c)' },
-  curva: { id: 'curva', sinal: [l], significado: 'Aproximando-me de curva ou trecho sem visibilidade', regra: 'RIPEAM Regra 34(e)' },
-  'cerracao-com-seguimento': { id: 'cerracao-com-seguimento', sinal: [l], significado: 'Visibilidade restrita: propulsão mecânica com seguimento (a cada 2 min)', regra: 'RIPEAM Regra 35(a)' },
-  'cerracao-sem-seguimento': { id: 'cerracao-sem-seguimento', sinal: [l, l], significado: 'Visibilidade restrita: propulsão mecânica parada, sem seguimento (a cada 2 min)', regra: 'RIPEAM Regra 35(b)' },
-  'cerracao-restrita': { id: 'cerracao-restrita', sinal: [l, c, c], significado: 'Visibilidade restrita: sem governo, manobra restrita, vela, pesca ou rebocando', regra: 'RIPEAM Regra 35(c)' },
+  'guinando-boreste': { id: 'guinando-boreste', sinal: [c], rotulo: 'Guinando para boreste', significado: 'Estou guinando para boreste', regra: 'RIPEAM Regra 34(a)' },
+  'guinando-bombordo': { id: 'guinando-bombordo', sinal: [c, c], rotulo: 'Guinando para bombordo', significado: 'Estou guinando para bombordo', regra: 'RIPEAM Regra 34(a)' },
+  'maquinas-atras': { id: 'maquinas-atras', sinal: [c, c, c], rotulo: 'Dando máquinas atrás', significado: 'Estou dando máquinas atrás', regra: 'RIPEAM Regra 34(a)' },
+  duvida: { id: 'duvida', sinal: [c, c, c, c, c], rotulo: 'Não entendi: dúvida', significado: 'Não entendi suas intenções / dúvida', regra: 'RIPEAM Regra 34(d)' },
+  'ultrapassar-boreste': { id: 'ultrapassar-boreste', sinal: [l, l, c], rotulo: 'Vou ultrapassar por boreste', significado: 'Pretendo ultrapassá-lo por seu boreste (canal estreito)', regra: 'RIPEAM Regra 34(c)' },
+  'ultrapassar-bombordo': { id: 'ultrapassar-bombordo', sinal: [l, l, c, c], rotulo: 'Vou ultrapassar por bombordo', significado: 'Pretendo ultrapassá-lo por seu bombordo (canal estreito)', regra: 'RIPEAM Regra 34(c)' },
+  concordancia: { id: 'concordancia', sinal: [l, c, l, c], rotulo: 'De acordo', significado: 'De acordo com a ultrapassagem', regra: 'RIPEAM Regra 34(c)' },
+  curva: { id: 'curva', sinal: [l], rotulo: 'Chegando à curva', significado: 'Aproximando-me de curva ou trecho sem visibilidade', regra: 'RIPEAM Regra 34(e)' },
+  'cerracao-com-seguimento': { id: 'cerracao-com-seguimento', sinal: [l], rotulo: 'Neblina: navegando', significado: 'Visibilidade restrita: propulsão mecânica com seguimento (a cada 2 min)', regra: 'RIPEAM Regra 35(a)' },
+  'cerracao-sem-seguimento': { id: 'cerracao-sem-seguimento', sinal: [l, l], rotulo: 'Neblina: parado na água', significado: 'Visibilidade restrita: propulsão mecânica parada, sem seguimento (a cada 2 min)', regra: 'RIPEAM Regra 35(b)' },
+  'cerracao-restrita': { id: 'cerracao-restrita', sinal: [l, c, c], rotulo: 'Neblina: manobra limitada', significado: 'Visibilidade restrita: sem governo, manobra restrita, vela, pesca ou rebocando', regra: 'RIPEAM Regra 35(c)' },
 };
 
 /** Notação visual: • curto, ▬ longo. */
